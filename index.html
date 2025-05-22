@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>🐸 Jogo do Sapinho</title>
+  <link rel="icon" href="https://em-content.zobj.net/thumbs/160/twitter/322/frog_1f438.png" type="image/png">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: sans-serif;
+      background: #e0f7fa;
+      overflow: hidden;
+    }
+    #top-bar {
+      display: flex;
+      justify-content: space-between;
+      background: #00796b;
+      color: white;
+      padding: 10px;
+    }
+    #weather, #clock {
+      width: 50%;
+      text-align: center;
+    }
+    #game-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 20px;
+      position: relative;
+    }
+    #left-ad, #right-ad {
+      width: 300px;
+      height: 600px;
+      background: #cfd8dc;
+      margin: 0 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 14px;
+      color: #455a64;
+    }
+    canvas {
+      border: 2px solid #0288d1;
+      z-index: 1;
+    }
+    #footer {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      text-align: center;
+      background: #004d40;
+      color: white;
+      padding: 10px;
+      font-size: 14px;
+    }
+    #start-banner, #game-over-banner, #victory-banner {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(255, 255, 255, 0.9);
+      padding: 30px;
+      text-align: center;
+      border: 3px solid #00796b;
+      border-radius: 12px;
+      z-index: 2;
+    }
+    #start-banner h1 {
+      font-size: 32px;
+      color: #2e7d32;
+      margin-bottom: 20px;
+    }
+    #start-banner p {
+      font-size: 24px;
+      color: #d32f2f;
+      animation: blink 1s infinite;
+    }
+    #game-over-banner h2, #victory-banner h2 {
+      font-size: 28px;
+      color: #c62828;
+    }
+    #game-over-banner p, #victory-banner p {
+      font-size: 22px;
+      margin-top: 10px;
+    }
+    #restart-button, #play-again-button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 18px;
+      background-color: #00796b;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div id="top-bar">
+    <div id="weather">Previsão do Tempo (API OpenWeatherMap)</div>
+    <div id="clock">Relógio e Calendário (API WorldTimeAPI)</div>
+  </div>
+
+  <div id="game-container">
+    <div id="left-ad">Banner AdSense Esquerdo (300x600)</div>
+    <canvas id="gameCanvas" width="800" height="400"></canvas>
+    <div id="right-ad">Banner AdSense Direito (300x600)</div>
+
+    <div id="start-banner">
+      <h1>🐸 Sejam bem-vindos ao Jogo do Sapinho!</h1>
+      <p>Pressione qualquer tecla para iniciar o jogo</p>
+    </div>
+
+    <div id="game-over-banner" style="display:none">
+      <h2>Game Over!</h2>
+      <p>Sua pontuação: <span id="final-score"></span></p>
+      <button id="restart-button">Reiniciar Jogo</button>
+    </div>
+
+    <div id="victory-banner" style="display:none">
+      <h2>🎉 Parabéns! Você venceu!</h2>
+      <p>Pontuação Final: <span id="victory-score"></span></p>
+      <button id="play-again-button">Jogar Novamente</button>
+    </div>
+  </div>
+
+  <audio id="jumpSound" src="https://actions.google.com/sounds/v1/cartoon/slide_whistle_to_drum.ogg"></audio>
+  <audio id="failSound" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg"></audio>
+  <audio id="victorySound" src="https://actions.google.com/sounds/v1/cartoon/concussive_hit_guitar_boing.ogg"></audio>
+
+  <div id="footer">🐸 Siga o Sapinho nas redes sociais! Instagram | YouTube | TikTok</div>
+
+  <script>
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+    const jumpSound = document.getElementById("jumpSound");
+    const failSound = document.getElementById("failSound");
+    const victorySound = document.getElementById("victorySound");
+    const startBanner = document.getElementById("start-banner");
+    const gameOverBanner = document.getElementById("game-over-banner");
+    const finalScore = document.getElementById("final-score");
+    const restartButton = document.getElementById("restart-button");
+    const victoryBanner = document.getElementById("victory-banner");
+    const victoryScore = document.getElementById("victory-score");
+    const playAgainButton = document.getElementById("play-again-button");
+
+    const fases = ["primavera", "verão", "outono", "inverno"];
+    const coresFase = {
+      primavera: { fundo: "#dcedc8", chao: "#81c784" },
+      verão: { fundo: "#fff9c4", chao: "#fbc02d" },
+      outono: { fundo: "#ffe0b2", chao: "#ff8f00" },
+      inverno: { fundo: "#e0f7fa", chao: "#4dd0e1" }
+    };
+
+    const PONTUACAO_VITORIA = 5000;
+    const GRAVIDADE = 1.5;
+    const ALTURA_CHAO = 340;
+    const ALTURA_SAPO = 40;
+
+    let gameStarted = false;
+    let sapo, obstaculos, tempo, intervaloObstaculo, faseAtual, pontuacao;
+
+    function resetGame() {
+      sapo = { x: 100, y: 300, width: 40, height: ALTURA_SAPO, vy: 0, jumping: false };
+      obstaculos = [];
+      tempo = 0;
+      intervaloObstaculo = 120;
+      faseAtual = 0;
+      pontuacao = 0;
+      gameOverBanner.style.display = "none";
+      victoryBanner.style.display = "none";
+      startBanner.style.display = "block";
+      gameStarted = false;
+    }
+
+    function getFaseAtual() {
+      return fases[faseAtual % fases.length];
+    }
+
+    function drawChao() {
+      ctx.fillStyle = coresFase[getFaseAtual()].chao;
+      ctx.fillRect(0, ALTURA_CHAO, canvas.width, 5);
+    }
+
+    function drawSapo() {
+      ctx.fillStyle = "green";
+      ctx.beginPath();
+      ctx.arc(sapo.x + sapo.width / 2, sapo.y + sapo.height / 2, 20, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = "yellow";
+      ctx.beginPath();
+      ctx.arc(sapo.x + 12, sapo.y + 10, 5, 0, Math.PI * 2);
+      ctx.arc(sapo.x + 28, sapo.y + 10, 5, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = "black";
+      ctx.beginPath();
+      ctx.arc(sapo.x + 12, sapo.y + 10, 2, 0, Math.PI * 2);
+      ctx.arc(sapo.x + 28, sapo.y + 10, 2, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    function drawObstaculo(obs) {
+      ctx.fillStyle = obs.color;
+      ctx.fillRect(obs.x, obs.y, obs.width, obs.height);
+    }
+
+    function atualizarJogo() {
+      const fase = getFaseAtual();
+      canvas.style.background = coresFase[fase].fundo;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawChao();
+
+      sapo.vy += GRAVIDADE;
+      sapo.y += sapo.vy;
+      if (sapo.y > 300) {
+        sapo.y = 300;
+        sapo.jumping = false;
+      }
+      drawSapo();
+
+      if (tempo % intervaloObstaculo === 0) {
+        let cores = ["#d32f2f", "#fbc02d", "#7b1fa2", "#00796b"];
+        let cor = cores[Math.floor(Math.random() * cores.length)];
+        obstaculos.push({ x: canvas.width, y: 310, width: 30, height: 30, color: cor });
+      }
+
+      for (let i = 0; i < obstaculos.length; i++) {
+        let obs = obstaculos[i];
+        obs.x -= 5;
+        drawObstaculo(obs);
+      }
+
+      obstaculos = obstaculos.filter(obs => obs.x + obs.width > 0);
+
+      tempo++;
+      pontuacao++;
+
+      if (tempo % 1500 === 0) {
+        faseAtual++;
+        intervaloObstaculo = Math.max(60, intervaloObstaculo - 10);
+      }
+
+      ctx.fillStyle = "#000";
+      ctx.font = "bold 18px Arial";
+      ctx.fillText("Score: " + pontuacao, 10, 25);
+    }
+
+    function verificarColisao() {
+      for (let obs of obstaculos) {
+        if (
+          sapo.x < obs.x + obs.width &&
+          sapo.x + sapo.width > obs.x &&
+          sapo.y < obs.y + obs.height &&
+          sapo.y + sapo.height > obs.y
+        ) {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    function iniciarJogo() {
+      gameStarted = true;
+      requestAnimationFrame(gameLoop);
+    }
+
+    function gameLoop() {
+      if (!gameStarted) return;
+      atualizarJogo();
+
+      if (verificarColisao()) {
+        gameStarted = false;
+        failSound.play();
+        finalScore.textContent = pontuacao;
+        gameOverBanner.style.display = "block";
+        return;
+      }
+
+      if (pontuacao >= PONTUACAO_VITORIA) {
+        gameStarted = false;
+        victorySound.play();
+        victoryScore.textContent = pontuacao;
+        victoryBanner.style.display = "block";
+        return;
+      }
+
+      requestAnimationFrame(gameLoop);
+    }
+
+    document.addEventListener("keydown", (event) => {
+      if (!gameStarted && startBanner.style.display === "block") {
+        startBanner.style.display = "none";
+        iniciarJogo();
+        return;
+      }
+      if (gameStarted && !sapo.jumping && event.code === "Space") {
+        sapo.vy = -20;
+        sapo.jumping = true;
+        jumpSound.play();
+      }
+    });
+
+    restartButton.addEventListener("click", resetGame);
+    playAgainButton.addEventListener("click", resetGame);
+
+    resetGame();
+  </script>
+</body>
+</html>
