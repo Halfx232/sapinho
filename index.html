@@ -312,6 +312,54 @@
     restartButton.addEventListener("click", resetGame);
     playAgainButton.addEventListener("click", resetGame);
 
+    // ===== CÓDIGO DAS APIs (MODIFICADO) =====
+const weatherElement = document.getElementById("weather");
+const clockElement = document.getElementById("clock");
+
+// Função para buscar clima (com timeout e tratamento de erro)
+async function fetchWeather() {
+  try {
+    const API_KEY = "b8a0cd03c689322da2746720be31d534";
+    const city = "São Paulo";
+    const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&lang=pt_br&units=metric`);
+    if (!response.ok) throw new Error("Falha na API");
+    const data = await response.json();
+    const temp = Math.round(data.main.temp);
+    const description = data.weather[0].description;
+    weatherElement.textContent = `☀️ ${city}: ${temp}°C, ${description}`;
+  } catch (error) {
+    weatherElement.textContent = "Clima indisponível";
+    console.warn("Erro no clima:", error); // Não quebra o jogo
+  }
+}
+
+// Função para atualizar hora (com fallback para horário local)
+async function atualizarHora() {
+  try {
+    const response = await fetch("https://worldtimeapi.org/api/timezone/America/Sao_Paulo");
+    if (!response.ok) throw new Error("Falha na API");
+    const data = await response.json();
+    const dateTime = new Date(data.datetime);
+    clockElement.textContent = `🕒 ${dateTime.toLocaleDateString()} - ${dateTime.toLocaleTimeString()}`;
+  } catch (error) {
+    // Fallback: usa o horário do sistema se a API falhar
+    const now = new Date();
+    clockElement.textContent = `🕒 ${now.toLocaleDateString()} - ${now.toLocaleTimeString()}`;
+    console.warn("Erro no relógio:", error); // Não quebra o jogo
+  }
+}
+
+// ===== INICIALIZAÇÃO SEGURA =====
+// Espera o jogo carregar antes de chamar as APIs
+window.addEventListener('load', () => {
+  resetGame(); // Inicia o jogo primeiro
+  setTimeout(() => {
+    fetchWeather(); // Depois tenta buscar o clima
+    atualizarHora(); // E a hora
+    setInterval(atualizarHora, 30000); // Atualiza a cada 30s
+  }, 1000); // Delay de 1s para não travar o início
+});
+
     resetGame();
 
   </script>
