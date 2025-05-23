@@ -313,43 +313,7 @@
     playAgainButton.addEventListener("click", resetGame);
 
     resetGame();
-    <script>
-    const weatherElement = document.getElementById("weather");
-    const clockElement = document.getElementById("clock");
 
-    const API_KEY = "b8a0cd03c689322da2746720be31d534";
-    const city = "São Paulo";
-
-    async function fetchWeather() {
-      try {
-        const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&lang=pt_br&units=metric`);
-        const data = await response.json();
-        const temp = Math.round(data.main.temp);
-        const description = data.weather[0].description;
-        weatherElement.textContent = `☀️ ${city}: ${temp}°C, ${description}`;
-      } catch (error) {
-        weatherElement.textContent = "Erro ao carregar previsão do tempo.";
-        console.error(error);
-      }
-    }
-
-    async function atualizarHora() {
-      try {
-        const response = await fetch("https://worldtimeapi.org/api/timezone/America/Sao_Paulo");
-        const data = await response.json();
-        const dateTime = new Date(data.datetime);
-        const hora = dateTime.toLocaleTimeString();
-        const dataFormatada = dateTime.toLocaleDateString();
-        clockElement.textContent = `🕒 ${dataFormatada} - ${hora}`;
-      } catch (error) {
-        clockElement.textContent = "Erro ao carregar hora.";
-        console.error(error);
-      }
-    }
-
-    fetchWeather();
-    atualizarHora();
-    setInterval(atualizarHora, 10000);
   </script>
 </body>
 </html>
