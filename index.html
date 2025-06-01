@@ -140,6 +140,9 @@
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
     const jumpSound = document.getElementById("jumpSound");
+    // ⬇️⬇️ ADICIONE ISSO ⬇️⬇️
+    jumpSound.preload = 'auto';  // Pré-carrega o som
+    jumpSound.volume = 0.3;      // Ajusta o volume (opcional)
     const failSound = document.getElementById("failSound");
     const victorySound = document.getElementById("victorySound");
     const startBanner = document.getElementById("start-banner");
@@ -305,7 +308,8 @@
       if (gameStarted && !sapo.jumping && event.code === "Space") {
         sapo.vy = -20;
         sapo.jumping = true;
-        jumpSound.play();
+        jumpSound.currentTime = 0;  // ⬅️ Reinicia o som
+        jumpSound.play().catch(e => {}); // ⬅️ Nova linha
       }
     });
 
