@@ -310,9 +310,18 @@
         sapo.jumping = true;
         jumpSound.currentTime = 0;  // ⬅️ Reinicia o som
         jumpSound.play().catch(e => {}); // ⬅️ Nova linha
-        // ===== EFETO DE POEIRA (adicione isso!) =====
-        ctx.fillStyle = "rgba(100, 100, 100, 0.5)"; // ⬅️ Cinza semi-transparente
-        ctx.fillRect(sapo.x - 10, ALTURA_CHAO - 10, 60, 5); // ⬅️ Retângulo de poeira
+        // Dentro do evento de pulo, APÓS jumpSound.play():
+        ctx.fillStyle = "rgba(100, 100, 100, 0.5)"; // ⬅️ Mesma cor
+        ctx.beginPath(); // ⬅️ Inicia um novo caminho de desenho
+           ctx.arc(
+           sapo.x + 20,       // ⬅️ Posição X (centralizada no sapo)
+           ALTURA_CHAO - 5,   // ⬅️ Posição Y (logo acima do chão)
+           10,                // ⬅️ Raio do círculo (tamanho da poeira)
+           0,                 // ⬅️ Ângulo inicial (0)
+           Math.PI * 2        // ⬅️ Ângulo final (360 graus)
+           );
+           ctx.fill(); // ⬅️ Preenche o círculo
+        
       }
     });
 
