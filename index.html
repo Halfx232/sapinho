@@ -168,7 +168,7 @@
 
     let gameStarted = false;
     let sapo, obstaculos, tempo, intervaloObstaculo, faseAtual, pontuacao;
-    / ⬇️ Adicione esta linha:
+    // ⬇️ Adicione esta linha:
     let poeira = []; // Array para guardar as partículas
 
     function resetGame() {
@@ -216,7 +216,7 @@
       ctx.fillStyle = obs.color;
       ctx.fillRect(obs.x, obs.y, obs.width, obs.height);
     }
-    / ⬇️⬇️ COLE ISSO AQUI ⬇️⬇️
+    // ⬇️⬇️ COLE ISSO AQUI ⬇️⬇️
 function atualizarPoeira() {
   ctx.fillStyle = "rgba(100, 100, 100, 0.5)";
   for (let i = 0; i < poeira.length; i++) {
