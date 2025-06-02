@@ -168,6 +168,8 @@
 
     let gameStarted = false;
     let sapo, obstaculos, tempo, intervaloObstaculo, faseAtual, pontuacao;
+    / ⬇️ Adicione esta linha:
+    let poeira = []; // Array para guardar as partículas
 
     function resetGame() {
       sapo = { x: 100, y: 300, width: 40, height: ALTURA_SAPO, vy: 0, jumping: false };
@@ -214,6 +216,19 @@
       ctx.fillStyle = obs.color;
       ctx.fillRect(obs.x, obs.y, obs.width, obs.height);
     }
+    / ⬇️⬇️ COLE ISSO AQUI ⬇️⬇️
+function atualizarPoeira() {
+  ctx.fillStyle = "rgba(100, 100, 100, 0.5)";
+  for (let i = 0; i < poeira.length; i++) {
+    const p = poeira[i];
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.raio, 0, Math.PI * 2);
+    ctx.fill();
+    p.raio -= 0.3;
+    p.alpha -= 0.02;
+  }
+  poeira = poeira.filter(p => p.raio > 0 && p.alpha > 0);
+  }
 
     function atualizarJogo() {
       const fase = getFaseAtual();
@@ -229,6 +244,7 @@
         sapo.jumping = false;
       }
       drawSapo();
+      atualizarPoeira(); // ⬅️ ADICIONE ESTA LINHA!
 
       if (tempo % intervaloObstaculo === 0) {
         let cores = ["#d32f2f", "#fbc02d", "#7b1fa2", "#00796b"];
@@ -310,20 +326,15 @@
         sapo.jumping = true;
         jumpSound.currentTime = 0;  // ⬅️ Reinicia o som
         jumpSound.play().catch(e => {}); // ⬅️ Nova linha
-        // Dentro do evento de pulo, APÓS jumpSound.play():
-        ctx.fillStyle = "rgba(100, 100, 100, 0.5)"; // ⬅️ Mesma cor
-        ctx.beginPath(); // ⬅️ Inicia um novo caminho de desenho
-           ctx.arc(
-           sapo.x + 20,       // ⬅️ Posição X (centralizada no sapo)
-           ALTURA_CHAO - 5,   // ⬅️ Posição Y (logo acima do chão)
-           10,                // ⬅️ Raio do círculo (tamanho da poeira)
-           0,                 // ⬅️ Ângulo inicial (0)
-           Math.PI * 2        // ⬅️ Ângulo final (360 graus)
-           );
-           ctx.fill(); // ⬅️ Preenche o círculo
-        
-      }
-    });
+        // ⬇️ Substitua o código de desenho por isto:
+           poeira.push({
+           x: sapo.x + 20,
+           y: ALTURA_CHAO - 5,
+           raio: 10,
+           alpha: 0.5 // Transparência
+        });
+        }
+       
 
     restartButton.addEventListener("click", resetGame);
     playAgainButton.addEventListener("click", resetGame);
