@@ -317,24 +317,29 @@ function atualizarPoeira() {
     }
 
     document.addEventListener("keydown", (event) => {
+      // Iniciar o jogo com qualquer tecla (se estiver na tela inicial)
       if (!gameStarted && startBanner.style.display === "block") {
         startBanner.style.display = "none";
         iniciarJogo();
         return;
       }
+
+      // Pular apenas com espaço (quando o jogo já estiver rodando)
       if (gameStarted && !sapo.jumping && event.code === "Space") {
         sapo.vy = -20;
         sapo.jumping = true;
         jumpSound.currentTime = 0;  // ⬅️ Reinicia o som
         jumpSound.play().catch(e => {}); // ⬅️ Nova linha
-        // ⬇️ Substitua o código de desenho por isto:
+        // Criar partículas de poeira
            poeira.push({
            x: sapo.x + 20,
            y: ALTURA_CHAO - 5,
            raio: 10,
            alpha: 0.5 // Transparência
            });
-        
+           }
+           });
+    
     restartButton.addEventListener("click", resetGame);
     playAgainButton.addEventListener("click", resetGame);
 
@@ -386,7 +391,7 @@ window.addEventListener('load', () => {
   }, 1000); // Delay de 1s para não travar o início
 });
 
-    resetGame();
+   // resetGame();
 
   </script>
 </body>
