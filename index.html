@@ -145,6 +145,12 @@
     jumpSound.volume = 0.3;      // Ajusta o volume (opcional)
     const failSound = document.getElementById("failSound");
     const victorySound = document.getElementById("victorySound");
+    // ⬇️⬇️ ADICIONE AQUI ⬇️⬇️ (SOLUÇÃO PARA BLOQUEIO DE ÁUDIO)
+    document.body.addEventListener('click', () => {
+    jumpSound.play().then(() => {}).catch(e => {});
+    failSound.play().then(() => {}).catch(e => {});
+    victorySound.play().then(() => {}).catch(e => {});
+    }, { once: true });
     const startBanner = document.getElementById("start-banner");
     const gameOverBanner = document.getElementById("game-over-banner");
     const finalScore = document.getElementById("final-score");
