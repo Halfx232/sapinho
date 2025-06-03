@@ -221,7 +221,7 @@
 function atualizarPoeira() {
     for (let i = 0; i < poeira.length; i++) {
     const p = poeira[i];
-    ctx.fillStyle = `rgba(150, 150, 150, ${p.alpha})`; // Cor cinza-claro
+    ctx.fillStyle = `rgba(143, 188, 143, ${p.alpha})`; // Cor cinza-claro
     ctx.beginPath();
     ctx.arc(p.x, p.y, p.raio, 0, Math.PI * 2);
     ctx.fill();
@@ -338,7 +338,7 @@ function atualizarPoeira() {
         jumpSound.currentTime = 0;  // ⬅️ Reinicia o som
         jumpSound.play().catch(e => {}); // ⬅️ Nova linha
         // Cria 5 partículas de fumaça com movimento mais orgânico
-           for (let i = 0; i < 5; i++) {
+           for (let i = 0; i < 10; i++) {
         poeira.push({
         x: sapo.x + 15 + Math.random() * 10,  // Posição aleatória perto do sapo
         y: sapo.y + 30,                       // Começa na "barriga" do sapo
