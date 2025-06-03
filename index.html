@@ -219,17 +219,24 @@
     }
     // ⬇️ COLE ISSO AQUI 
 function atualizarPoeira() {
-  ctx.fillStyle = "rgba(100, 100, 100, 0.5)";
-  for (let i = 0; i < poeira.length; i++) {
+    for (let i = 0; i < poeira.length; i++) {
     const p = poeira[i];
+    ctx.fillStyle = `rgba(150, 150, 150, ${p.alpha})`; // Cor cinza-claro
     ctx.beginPath();
     ctx.arc(p.x, p.y, p.raio, 0, Math.PI * 2);
     ctx.fill();
-    p.raio -= 0.3;
-    p.alpha -= 0.02;
+
+    // Atualiza posição e propriedades
+    p.x += p.vx;       // Move horizontalmente
+    p.y += p.vy;       // Move verticalmente (para cima)
+    p.raio -= 0.1;     // Diminui devagar
+    p.alpha -= 0.01;   // Desaparece lentamente
+    p.vy *= 0.98;      // Desacelera o movimento vertical
   }
-  poeira = poeira.filter(p => p.raio > 0 && p.alpha > 0);
-  }
+
+  // Remove partículas muito pequenas ou transparentes
+  poeira = poeira.filter(p => p.raio > 0.2 && p.alpha > 0.05);
+}
 
     function atualizarJogo() {
       const fase = getFaseAtual();
@@ -322,7 +329,7 @@ function atualizarPoeira() {
         startBanner.style.display = "none";
         iniciarJogo();
         return;
-      }
+    }
 
       // Pular apenas com espaço (quando o jogo já estiver rodando)
       if (gameStarted && !sapo.jumping && event.code === "Space") {
@@ -330,15 +337,18 @@ function atualizarPoeira() {
         sapo.jumping = true;
         jumpSound.currentTime = 0;  // ⬅️ Reinicia o som
         jumpSound.play().catch(e => {}); // ⬅️ Nova linha
-        // Criar partículas de poeira
-           poeira.push({
-           x: sapo.x + 20,
-           y: ALTURA_CHAO - 5,
-           raio: 10,
-           alpha: 0.5 // Transparência
-           });
-           }
-           });
+        // Cria 5 partículas de fumaça com movimento mais orgânico
+           for (let i = 0; i < 5; i++) {
+        poeira.push({
+        x: sapo.x + 15 + Math.random() * 10,  // Posição aleatória perto do sapo
+        y: sapo.y + 30,                       // Começa na "barriga" do sapo
+        raio: 3 + Math.random() * 5,          // Tamanho variado
+        alpha: 0.7,                           // Mais visível
+        vy: -1 - Math.random() * 2,           // Velocidade vertical (para cima)
+        vx: Math.random() * 2 - 1             // Movimento horizontal leve
+        });
+      }
+     }
     
     restartButton.addEventListener("click", resetGame);
     playAgainButton.addEventListener("click", resetGame);
