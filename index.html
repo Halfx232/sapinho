@@ -201,23 +201,53 @@
     }
 
     function drawSapo() {
-      ctx.fillStyle = "green";
-      ctx.beginPath();
-      ctx.arc(sapo.x + sapo.width / 2, sapo.y + sapo.height / 2, 20, 0, Math.PI * 2);
-      ctx.fill();
+        const { x, y } = sapo;
+  
+  // Corpo (elipse verde)
+  ctx.fillStyle = "#4CAF50";
+  ctx.beginPath();
+  ctx.ellipse(x + 20, y + 20, 20, 15, 0, 0, Math.PI * 2);
+  ctx.fill();
 
-      ctx.fillStyle = "yellow";
-      ctx.beginPath();
-      ctx.arc(sapo.x + 12, sapo.y + 10, 5, 0, Math.PI * 2);
-      ctx.arc(sapo.x + 28, sapo.y + 10, 5, 0, Math.PI * 2);
-      ctx.fill();
+  // Olhos (branco + pupila)
+  ctx.fillStyle = "white";
+  ctx.beginPath();
+  ctx.arc(x + 10, y + 5, 6, 0, Math.PI * 2); // Olho esquerdo
+  ctx.arc(x + 30, y + 5, 6, 0, Math.PI * 2);  // Olho direito
+  ctx.fill();
+  
+  ctx.fillStyle = "black";
+  ctx.beginPath();
+  ctx.arc(x + 10, y + 5, 2, 0, Math.PI * 2);  // Pupila esquerda
+  ctx.arc(x + 30, y + 5, 2, 0, Math.PI * 2);  // Pupila direita
+  ctx.fill();
 
-      ctx.fillStyle = "black";
-      ctx.beginPath();
-      ctx.arc(sapo.x + 12, sapo.y + 10, 2, 0, Math.PI * 2);
-      ctx.arc(sapo.x + 28, sapo.y + 10, 2, 0, Math.PI * 2);
-      ctx.fill();
-    }
+  // Pernas (animadas conforme o pulo)
+  ctx.strokeStyle = "#388E3C";
+  ctx.lineWidth = 3;
+  
+  // Pernas traseiras (arqueadas)
+  ctx.beginPath();
+  ctx.arc(x + 5, y + 25, 10, Math.PI * 0.5, Math.PI * 1.5, false);
+  ctx.stroke();
+  
+  ctx.beginPath();
+  ctx.arc(x + 35, y + 25, 10, Math.PI * 0.5, Math.PI * 1.5, true);
+  ctx.stroke();
+
+  // Braços (ângulo varia com o pulo)
+  const bracoAngle = sapo.jumping ? Math.PI * 0.3 : Math.PI * 0.2;
+  
+  ctx.beginPath();
+  ctx.moveTo(x + 15, y + 20);
+  ctx.lineTo(x + 5, y + 20 + Math.sin(bracoAngle) * 10);
+  ctx.stroke();
+  
+  ctx.beginPath();
+  ctx.moveTo(x + 25, y + 20);
+  ctx.lineTo(x + 35, y + 20 + Math.sin(bracoAngle) * 10);
+  ctx.stroke();
+}
 
     function drawObstaculo(obs) {
       ctx.fillStyle = obs.color;
