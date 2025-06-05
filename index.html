@@ -201,8 +201,8 @@
     }
 
     function drawSapo() {
- const { x, y, vy, jumping } = sapo;
-  const groundLevel = ALTURA_CHAO - 340; // Ajuste para não passar do chão
+  const { x, y, jumping } = sapo;
+  const groundY = ALTURA_CHAO - 30; // Ajuste final para alinhar com o chão
 
   // ---- CORPO ----
   ctx.fillStyle = "#4CAF50";
@@ -227,51 +227,56 @@
   ctx.strokeStyle = "#2E7D32";
   ctx.lineWidth = 3;
   
-  // Ângulo dos braços (45° em repouso, 90° no pulo)
-  const armAngle = jumping ? Math.PI/2 : Math.PI/4; // 45° → 90°
-  
-  // Braço esquerdo (ombro → cotovelo → mão)
+  // Ângulos (45° em repouso, 90° no pulo)
+  const upperArmAngle = 0; // Braço sempre horizontal
+  const lowerArmAngle = jumping ? Math.PI/2 : Math.PI/4; // Antebraço 45°→90°
+
+  // Braço esquerdo
   ctx.beginPath();
-  ctx.moveTo(x + 15, y + 18);
-  ctx.lineTo(x + 5, y + 18 + Math.sin(armAngle) * 15); // Cotovelo
-  ctx.lineTo(x - 5, y + 18 + Math.sin(armAngle) * 25); // Mão (com dedo opcional)
+  ctx.moveTo(x + 15, y + 18); // Ombro
+  ctx.lineTo(x + 5, y + 18); // Braço horizontal
+  ctx.lineTo(
+    x + 5 - Math.cos(lowerArmAngle) * 15, 
+    y + 18 + Math.sin(lowerArmAngle) * 15 // Mão
+  );
   ctx.stroke();
 
   // Braço direito (espelhado)
   ctx.beginPath();
   ctx.moveTo(x + 25, y + 18);
-  ctx.lineTo(x + 35, y + 18 + Math.sin(armAngle) * 15);
-  ctx.lineTo(x + 45, y + 18 + Math.sin(armAngle) * 25);
+  ctx.lineTo(x + 35, y + 18);
+  ctx.lineTo(
+    x + 35 + Math.cos(lowerArmAngle) * 15, 
+    y + 18 + Math.sin(lowerArmAngle) * 15
+  );
   ctx.stroke();
 
   // ---- PERNAS ----
-  // Coxas (visíveis lateralmente)
-  ctx.beginPath();
-  ctx.moveTo(x + 12, y + 25);
-  ctx.lineTo(x + 5, y + 40); // Coxa esquerda
-  ctx.moveTo(x + 28, y + 25);
-  ctx.lineTo(x + 35, y + 40); // Coxa direita
-  ctx.stroke();
-
-  // Pernas (dobram no pulo)
-  const legAngle = jumping ? Math.PI/2 : Math.PI/4; // 45° → 90°
+  // Coxas (45° em repouso, 90° no pulo)
+  const thighAngle = jumping ? Math.PI/2 : Math.PI/4;
+  
   ctx.beginPath();
   // Perna esquerda
-  ctx.moveTo(x + 5, y + 40);
-  ctx.lineTo(x - 5, y + 40 + Math.sin(legAngle) * 20);
+  ctx.moveTo(x + 12, y + 25);
+  ctx.lineTo(
+    x + 5 - Math.cos(thighAngle) * 15, 
+    y + 25 + Math.sin(thighAngle) * 15
+  );
   // Perna direita
-  ctx.moveTo(x + 35, y + 40);
-  ctx.lineTo(x + 45, y + 40 + Math.sin(legAngle) * 20);
+  ctx.moveTo(x + 28, y + 25);
+  ctx.lineTo(
+    x + 35 + Math.cos(thighAngle) * 15, 
+    y + 25 + Math.sin(thighAngle) * 15
+  );
   ctx.stroke();
 
-  // Pés (pequenos e finos)
+  // Pés (sempre acima do chão)
   ctx.fillStyle = "#2E7D32";
   ctx.beginPath();
-  ctx.ellipse(x - 5, y + 60, 5, 2, 0, 0, Math.PI * 2); // Pé esquerdo
-  ctx.ellipse(x + 45, y + 60, 5, 2, 0, 0, Math.PI * 2); // Pé direito
+  ctx.arc(x - 10, groundY, 5, 0, Math.PI * 2); // Pé esquerdo
+  ctx.arc(x + 50, groundY, 5, 0, Math.PI * 2); // Pé direito
   ctx.fill();
 }
-
     function drawObstaculo(obs) {
       ctx.fillStyle = obs.color;
       ctx.fillRect(obs.x, obs.y, obs.width, obs.height);
