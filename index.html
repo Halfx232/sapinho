@@ -202,9 +202,9 @@
 
     function drawSapo() {
   const { x, y, jumping } = sapo;
-  const groundY = ALTURA_CHAO - 30; // Ajuste final para alinhar com o chão
+  const groundY = ALTURA_CHAO - 30; // Altura ajustada ao chão
 
-  // ---- CORPO ----
+  // ---- CORPO (sem bolinhas laterais) ----
   ctx.fillStyle = "#4CAF50";
   ctx.beginPath();
   ctx.ellipse(x + 20, y + 15, 18, 12, 0, 0, Math.PI * 2);
@@ -223,21 +223,20 @@
   ctx.arc(x + 30, y + 5, 2, 0, Math.PI * 2);
   ctx.fill();
 
-  // ---- BRAÇOS ----
+  // ---- BRAÇOS (movimento para CIMA no pulo) ----
   ctx.strokeStyle = "#2E7D32";
   ctx.lineWidth = 3;
   
-  // Ângulos (45° em repouso, 90° no pulo)
-  const upperArmAngle = 0; // Braço sempre horizontal
-  const lowerArmAngle = jumping ? Math.PI/2 : Math.PI/4; // Antebraço 45°→90°
+  // Ângulos: braço horizontal e antebraço para cima
+  const lowerArmAngle = jumping ? -Math.PI/2 : -Math.PI/4; // -45° → -90° (sobe)
 
   // Braço esquerdo
   ctx.beginPath();
   ctx.moveTo(x + 15, y + 18); // Ombro
-  ctx.lineTo(x + 5, y + 18); // Braço horizontal
+  ctx.lineTo(x + 5, y + 18);  // Braço horizontal
   ctx.lineTo(
-    x + 5 - Math.cos(lowerArmAngle) * 15, 
-    y + 18 + Math.sin(lowerArmAngle) * 15 // Mão
+    x + 5 + Math.cos(lowerArmAngle) * 15, 
+    y + 18 + Math.sin(lowerArmAngle) * 15 // Mão (sobe)
   );
   ctx.stroke();
 
@@ -246,15 +245,14 @@
   ctx.moveTo(x + 25, y + 18);
   ctx.lineTo(x + 35, y + 18);
   ctx.lineTo(
-    x + 35 + Math.cos(lowerArmAngle) * 15, 
+    x + 35 - Math.cos(lowerArmAngle) * 15, 
     y + 18 + Math.sin(lowerArmAngle) * 15
   );
   ctx.stroke();
 
-  // ---- PERNAS ----
-  // Coxas (45° em repouso, 90° no pulo)
-  const thighAngle = jumping ? Math.PI/2 : Math.PI/4;
-  
+  // ---- PERNAS (movimento para BAIXO no pulo) ----
+  const thighAngle = jumping ? Math.PI/2 : Math.PI/4; // 45° → 90° (estica)
+
   ctx.beginPath();
   // Perna esquerda
   ctx.moveTo(x + 12, y + 25);
@@ -270,7 +268,7 @@
   );
   ctx.stroke();
 
-  // Pés (sempre acima do chão)
+  // Pés (fixos no chão)
   ctx.fillStyle = "#2E7D32";
   ctx.beginPath();
   ctx.arc(x - 10, groundY, 5, 0, Math.PI * 2); // Pé esquerdo
