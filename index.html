@@ -202,9 +202,8 @@
 
     function drawSapo() {
   const { x, y, jumping } = sapo;
-  const groundY = ALTURA_CHAO - 25; // Ajuste fino para alinhar com o chão
 
-  // ---- CORPO (sem bolinhas extras) ----
+  // ---- CORPO ----
   ctx.fillStyle = "#4CAF50";
   ctx.beginPath();
   ctx.ellipse(x + 20, y + 15, 18, 12, 0, 0, Math.PI * 2);
@@ -223,56 +222,33 @@
   ctx.arc(x + 30, y + 5, 2, 0, Math.PI * 2);
   ctx.fill();
 
-  // ---- BRAÇOS (agora visíveis e movendo para CIMA) ----
+  // ---- BRAÇOS (agora obrigatoriamente visíveis) ----
   ctx.strokeStyle = "#2E7D32";
-  ctx.lineWidth = 3;
-  
-  // Ângulos: braço horizontal e antebraço para cima
-  const armAngle = jumping ? -Math.PI/2 : -Math.PI/4; // -45° → -90° (sobe)
+  ctx.lineWidth = 4; // Deixando mais grossos
 
-  // Braço esquerdo (agora visível)
+  // Braço esquerdo (horizontal + antebraço para cima)
   ctx.beginPath();
   ctx.moveTo(x + 15, y + 18); // Ombro
   ctx.lineTo(x + 5, y + 18);  // Braço horizontal
-  // Antebraço (sobe no pulo)
-  ctx.lineTo(
-    x + 5 + Math.cos(armAngle) * 12, 
-    y + 18 + Math.sin(armAngle) * 12
-  );
+  ctx.lineTo(x + 5, y + 8);   // Antebraço (fixo para cima)
   ctx.stroke();
 
   // Braço direito (espelhado)
   ctx.beginPath();
   ctx.moveTo(x + 25, y + 18);
   ctx.lineTo(x + 35, y + 18);
-  ctx.lineTo(
-    x + 35 - Math.cos(armAngle) * 12, 
-    y + 18 + Math.sin(armAngle) * 12
-  );
+  ctx.lineTo(x + 35, y + 8);
   ctx.stroke();
 
-  // ---- PERNAS ----
+  // ---- PERNAS (sem pés, apenas linhas) ----
   ctx.beginPath();
-  // Coxa esquerda (45° em repouso, 90° no pulo)
+  // Perna esquerda
   ctx.moveTo(x + 12, y + 25);
-  ctx.lineTo(
-    x + 5, 
-    y + 25 + (jumping ? 20 : 15)
-  );
-  // Coxa direita
+  ctx.lineTo(x + 5, y + 40);
+  // Perna direita
   ctx.moveTo(x + 28, y + 25);
-  ctx.lineTo(
-    x + 35, 
-    y + 25 + (jumping ? 20 : 15)
-  );
+  ctx.lineTo(x + 35, y + 40);
   ctx.stroke();
-
-  // Pés (pequenos círculos verdes no chão)
-  ctx.fillStyle = "#2E7D32";
-  ctx.beginPath();
-  ctx.arc(x + 5, groundY, 4, 0, Math.PI * 2); // Pé esquerdo
-  ctx.arc(x + 35, groundY, 4, 0, Math.PI * 2); // Pé direito
-  ctx.fill();
 }
     function drawObstaculo(obs) {
       ctx.fillStyle = obs.color;
