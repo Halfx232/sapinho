@@ -201,7 +201,7 @@
     }
 
     function drawSapo() {
-  const { x, y, jumping } = sapo;
+ const { x, y, jumping } = sapo;
 
   // ---- CORPO ----
   ctx.fillStyle = "#4CAF50";
@@ -222,30 +222,37 @@
   ctx.arc(x + 30, y + 5, 2, 0, Math.PI * 2);
   ctx.fill();
 
-  // ---- BRAÇOS (agora obrigatoriamente visíveis) ----
+  // ---- BRAÇOS (para fora do corpo, articulando no pulo) ----
   ctx.strokeStyle = "#2E7D32";
-  ctx.lineWidth = 4; // Deixando mais grossos
+  ctx.lineWidth = 3;
 
-  // Braço esquerdo (horizontal + antebraço para cima)
+  // Ângulo do antebraço (45° em repouso, 90° no pulo)
+  const forearmAngle = jumping ? Math.PI/2 : Math.PI/4;
+
+  // Braço esquerdo
   ctx.beginPath();
   ctx.moveTo(x + 15, y + 18); // Ombro
-  ctx.lineTo(x + 5, y + 18);  // Braço horizontal
-  ctx.lineTo(x + 5, y + 8);   // Antebraço (fixo para cima)
+  ctx.lineTo(x + 5, y + 18);  // Braço (horizontal para fora)
+  ctx.lineTo(
+    x + 5 - Math.cos(forearmAngle) * 15, 
+    y + 18 + Math.sin(forearmAngle) * 15 // Antebraço (articula)
+  );
   ctx.stroke();
 
   // Braço direito (espelhado)
   ctx.beginPath();
   ctx.moveTo(x + 25, y + 18);
   ctx.lineTo(x + 35, y + 18);
-  ctx.lineTo(x + 35, y + 8);
+  ctx.lineTo(
+    x + 35 + Math.cos(forearmAngle) * 15, 
+    y + 18 + Math.sin(forearmAngle) * 15
+  );
   ctx.stroke();
 
-  // ---- PERNAS (sem pés, apenas linhas) ----
+  // ---- PERNAS (simples, sem pés) ----
   ctx.beginPath();
-  // Perna esquerda
   ctx.moveTo(x + 12, y + 25);
   ctx.lineTo(x + 5, y + 40);
-  // Perna direita
   ctx.moveTo(x + 28, y + 25);
   ctx.lineTo(x + 35, y + 40);
   ctx.stroke();
