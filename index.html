@@ -253,12 +253,12 @@
   ctx.arc(x + 35, y + 8, 2, 0, Math.PI * 2);
   ctx.fill();
 
-  // ---- BOCA (sorriso ajustado) ----
-  ctx.strokeStyle = "black";
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.arc(x + 25, y + 18, 7, 0.1, Math.PI - 0.1); // Menor, mais alto e menos "esticado"
-  ctx.stroke();
+ // ---- BOCA (sorriso aberto) ----
+ctx.strokeStyle = "black";
+ctx.lineWidth = 2;
+ctx.beginPath();
+ctx.arc(x + 25, y + 18, 8, 0.3, Math.PI - 0.3); // Ângulos ajustados para abrir mais
+ctx.stroke();
 
   // ---- PERNAS (proporção ajustada) ----
   ctx.strokeStyle = "green";
