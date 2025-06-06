@@ -201,7 +201,8 @@
     }
 
     function drawSapo() {
- const { x, y, jumping } = sapo;
+const { x, y, vy, jumping } = sapo;
+  const groundY = ALTURA_CHAO - 25; // Ajuste para alinhar com o chão
 
   // ---- CORPO ----
   ctx.fillStyle = "green";
@@ -222,20 +223,20 @@
   ctx.arc(x + 30, y + 5, 2, 0, Math.PI * 2);
   ctx.fill();
 
-  // ---- BRAÇOS (para fora do corpo, articulando no pulo) ----
+  // ---- BRAÇOS (articulando para cima no pulo) ----
   ctx.strokeStyle = "#2E7D32";
   ctx.lineWidth = 3;
-
-  // Ângulo do antebraço (45° em repouso, 90° no pulo)
-  const forearmAngle = jumping ? Math.PI/2 : Math.PI/4;
+  
+  // Ângulo dos braços (45° em repouso, 90° no pulo)
+  const armAngle = jumping ? -Math.PI/2 : -Math.PI/4; // Negativo = para cima
 
   // Braço esquerdo
   ctx.beginPath();
   ctx.moveTo(x + 15, y + 18); // Ombro
-  ctx.lineTo(x + 5, y + 18);  // Braço (horizontal para fora)
+  ctx.lineTo(x + 5, y + 18);  // Parte superior (horizontal)
   ctx.lineTo(
-    x + 5 - Math.cos(forearmAngle) * 15, 
-    y + 18 + Math.sin(forearmAngle) * 15 // Antebraço (articula)
+    x + 5 + Math.cos(armAngle) * 12, 
+    y + 18 + Math.sin(armAngle) * 12 // Antebraço (sobe)
   );
   ctx.stroke();
 
@@ -244,19 +245,32 @@
   ctx.moveTo(x + 25, y + 18);
   ctx.lineTo(x + 35, y + 18);
   ctx.lineTo(
-    x + 35 + Math.cos(forearmAngle) * 15, 
-    y + 18 + Math.sin(forearmAngle) * 15
+    x + 35 - Math.cos(armAngle) * 12, 
+    y + 18 + Math.sin(armAngle) * 12
   );
   ctx.stroke();
 
-  // ---- PERNAS (simples, sem pés) ----
+  // ---- PERNAS (articulando para baixo no pulo) ----
+  ctx.lineWidth = 3;
+  
+  // Ângulos das pernas (45° em repouso, 90° no pulo)
+  const thighAngle = jumping ? Math.PI/2 : Math.PI/4;
+
+  // Perna esquerda
   ctx.beginPath();
-  ctx.moveTo(x + 12, y + 25);
-  ctx.lineTo(x + 5, y + 40);
+  ctx.moveTo(x + 12, y + 25); // Quadril
+  ctx.lineTo(
+    x + 5 - Math.cos(thighAngle) * 10, 
+    y + 25 + Math.sin(thighAngle) * 20
+  );
+  // Perna direita
   ctx.moveTo(x + 28, y + 25);
-  ctx.lineTo(x + 35, y + 40);
+  ctx.lineTo(
+    x + 35 + Math.cos(thighAngle) * 10, 
+    y + 25 + Math.sin(thighAngle) * 20
+  );
   ctx.stroke();
-}
+  }
     function drawObstaculo(obs) {
       ctx.fillStyle = obs.color;
       ctx.fillRect(obs.x, obs.y, obs.width, obs.height);
