@@ -201,33 +201,42 @@
     }
 
     function drawSapo() {
-    const { x, y, jumping } = sapo;
+  const { x, y, jumping } = sapo;
 
-  // ---- 1. CORPO (desenho PRIMEIRO para ficar atrás) ----
+  // ---- CORPO ----
   ctx.fillStyle = "#4CAF50";
   ctx.beginPath();
   ctx.ellipse(x + 20, y + 15, 18, 12, 0, 0, Math.PI * 2);
   ctx.fill();
 
-  // ---- 2. BRAÇOS (desenho DEPOIS do corpo) ----
-  ctx.strokeStyle = "#2E7D32"; // Verde escuro (contraste)
-  ctx.lineWidth = 4; // Mais grossos
+  // ---- BRAÇOS (FORA do corpo, articulando no pulo) ----
+  ctx.strokeStyle = "#2E7D32"; // Verde escuro
+  ctx.lineWidth = 4; // Grossura aumentada
 
-  // Braço esquerdo (horizontal + antebraço para cima)
+  // Ângulo do antebraço (45° em repouso, 90° no pulo)
+  const armAngle = jumping ? Math.PI/2 : Math.PI/4;
+
+  // Braço esquerdo (horizontal para fora + antebraço articulado)
   ctx.beginPath();
   ctx.moveTo(x + 15, y + 18); // Ombro
-  ctx.lineTo(x + 5, y + 18);  // Braço horizontal
-  ctx.lineTo(x + 5, y + 8);   // Antebraço (para cima)
+  ctx.lineTo(x + 5, y + 18);  // Braço horizontal (para fora)
+  ctx.lineTo(
+    x + 5 - Math.cos(armAngle) * 15, // Antebraço (articula)
+    y + 18 + Math.sin(armAngle) * 15
+  );
   ctx.stroke();
 
   // Braço direito (espelhado)
   ctx.beginPath();
   ctx.moveTo(x + 25, y + 18);
   ctx.lineTo(x + 35, y + 18);
-  ctx.lineTo(x + 35, y + 8);
+  ctx.lineTo(
+    x + 35 + Math.cos(armAngle) * 15,
+    y + 18 + Math.sin(armAngle) * 15
+  );
   ctx.stroke();
 
-  // ---- 3. OLHOS (por cima dos braços) ----
+  // ---- OLHOS (sobrepostos) ----
   ctx.fillStyle = "white";
   ctx.beginPath();
   ctx.arc(x + 10, y + 5, 5, 0, Math.PI * 2);
@@ -240,24 +249,22 @@
   ctx.arc(x + 30, y + 5, 2, 0, Math.PI * 2);
   ctx.fill();
 
-  // ---- 4. PERNAS (último para ficar na frente) ----
+  // ---- PERNAS (articulando no pulo) ----
   ctx.strokeStyle = "#388E3C";
   ctx.lineWidth = 3;
-
-  // Ângulo das pernas (45° em repouso, 90° no pulo)
   const legAngle = jumping ? Math.PI/2 : Math.PI/4;
 
-  // Perna esquerda
   ctx.beginPath();
+  // Perna esquerda
   ctx.moveTo(x + 12, y + 25);
   ctx.lineTo(
-    x + 5 - Math.cos(legAngle) * 10, 
+    x + 5 - Math.cos(legAngle) * 10,
     y + 25 + Math.sin(legAngle) * 20
   );
   // Perna direita
   ctx.moveTo(x + 28, y + 25);
   ctx.lineTo(
-    x + 35 + Math.cos(legAngle) * 10, 
+    x + 35 + Math.cos(legAngle) * 10,
     y + 25 + Math.sin(legAngle) * 20
   );
   ctx.stroke();
