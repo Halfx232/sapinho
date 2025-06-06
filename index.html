@@ -253,6 +253,13 @@
   ctx.arc(x + 35, y + 8, 2, 0, Math.PI * 2);
   ctx.fill();
 
+      // ---- BOCA (sorriso) ----
+  ctx.strokeStyle = "black";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.arc(x + 25, y + 22, 10, 0, Math.PI); // Arco de 0 a 180° (sorriso)
+  ctx.stroke();
+
   // ---- PERNAS (proporção ajustada) ----
   ctx.strokeStyle = "green";
   ctx.lineWidth = 4; // Pernas um pouco mais grossas que braços
