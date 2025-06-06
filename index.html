@@ -203,72 +203,72 @@
     function drawSapo() {
   const { x, y, jumping } = sapo;
 
-  // ---- CORPO ----
+  // ---- CORPO (20% maior) ----
   ctx.fillStyle = "green";
   ctx.beginPath();
-  ctx.ellipse(x + 20, y + 15, 18, 12, 0, 0, Math.PI * 2);
+  ctx.ellipse(x + 25, y + 18, 22, 15, 0, 0, Math.PI * 2); // Aumentei raios para 22 e 15
   ctx.fill();
 
-  // ---- BRAÇOS (FORA do corpo, articulando no pulo) ----
-  ctx.strokeStyle = "green"; // Verde escuro
-  ctx.lineWidth = 4; // Grossura aumentada
+  // ---- BRAÇOS (mais finos e proporcionais) ----
+  ctx.strokeStyle = "green";
+  ctx.lineWidth = 3; // Reduzi de 4 para 3 (mais fino que as pernas)
 
   // Ângulo do antebraço (45° em repouso, 90° no pulo)
   const armAngle = jumping ? Math.PI/2 : Math.PI/4;
 
-  // Braço esquerdo (horizontal para fora + antebraço articulado)
+  // Braço esquerdo (agora mais longo)
   ctx.beginPath();
-  ctx.moveTo(x + 15, y + 18); // Ombro
-  ctx.lineTo(x + 5, y + 18);  // Braço horizontal (para fora)
+  ctx.moveTo(x + 18, y + 20); // Ombro ajustado
+  ctx.lineTo(x + 5, y + 20);  // Braço horizontal
   ctx.lineTo(
-    x + 5 - Math.cos(armAngle) * 15, // Antebraço (articula)
-    y + 18 + Math.sin(armAngle) * 15
+    x + 5 - Math.cos(armAngle) * 18, // Antebraço mais longo
+    y + 20 + Math.sin(armAngle) * 18
   );
   ctx.stroke();
 
-  // Braço direito (espelhado)
+  // Braço direito
   ctx.beginPath();
-  ctx.moveTo(x + 25, y + 18);
-  ctx.lineTo(x + 35, y + 18);
+  ctx.moveTo(x + 32, y + 20); // Ombro ajustado
+  ctx.lineTo(x + 45, y + 20);
   ctx.lineTo(
-    x + 35 + Math.cos(armAngle) * 15,
-    y + 18 + Math.sin(armAngle) * 15
+    x + 45 + Math.cos(armAngle) * 18,
+    y + 20 + Math.sin(armAngle) * 18
   );
   ctx.stroke();
 
-  // ---- OLHOS (sobrepostos) ----
+  // ---- OLHOS ----
   ctx.fillStyle = "yellow";
   ctx.beginPath();
-  ctx.arc(x + 10, y + 5, 5, 0, Math.PI * 2);
-  ctx.arc(x + 30, y + 5, 5, 0, Math.PI * 2);
+  ctx.arc(x + 15, y + 8, 6, 0, Math.PI * 2); // Olhos reposicionados
+  ctx.arc(x + 35, y + 8, 6, 0, Math.PI * 2);
   ctx.fill();
   
   ctx.fillStyle = "black";
   ctx.beginPath();
-  ctx.arc(x + 10, y + 5, 2, 0, Math.PI * 2);
-  ctx.arc(x + 30, y + 5, 2, 0, Math.PI * 2);
+  ctx.arc(x + 15, y + 8, 2, 0, Math.PI * 2);
+  ctx.arc(x + 35, y + 8, 2, 0, Math.PI * 2);
   ctx.fill();
 
-  // ---- PERNAS (articulando no pulo) ----
+  // ---- PERNAS (proporção ajustada) ----
   ctx.strokeStyle = "green";
-  ctx.lineWidth = 3;
-  const legAngle = jumping ? Math.PI/2 : Math.PI/4;
+  ctx.lineWidth = 4; // Pernas um pouco mais grossas que braços
 
+  const legAngle = jumping ? Math.PI/2 : Math.PI/4;
   ctx.beginPath();
   // Perna esquerda
-  ctx.moveTo(x + 12, y + 25);
+  ctx.moveTo(x + 15, y + 30); // Quadril ajustado
   ctx.lineTo(
-    x + 5 - Math.cos(legAngle) * 10,
-    y + 25 + Math.sin(legAngle) * 20
+    x + 5 - Math.cos(legAngle) * 12,
+    y + 30 + Math.sin(legAngle) * 25 // Pernas mais longas
   );
   // Perna direita
-  ctx.moveTo(x + 28, y + 25);
+  ctx.moveTo(x + 35, y + 30);
   ctx.lineTo(
-    x + 35 + Math.cos(legAngle) * 10,
-    y + 25 + Math.sin(legAngle) * 20
+    x + 45 + Math.cos(legAngle) * 12,
+    y + 30 + Math.sin(legAngle) * 25
   );
   ctx.stroke();
-}
+ }
     function drawObstaculo(obs) {
       ctx.fillStyle = obs.color;
       ctx.fillRect(obs.x, obs.y, obs.width, obs.height);
