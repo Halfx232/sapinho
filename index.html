@@ -201,36 +201,23 @@
     }
 
     function drawSapo() {
-  const { x, y, jumping } = sapo;
+    const { x, y, jumping } = sapo;
 
-  // ---- CORPO (verde) ----
+  // ---- 1. CORPO (desenho PRIMEIRO para ficar atrás) ----
   ctx.fillStyle = "#4CAF50";
   ctx.beginPath();
   ctx.ellipse(x + 20, y + 15, 18, 12, 0, 0, Math.PI * 2);
   ctx.fill();
 
-  // ---- OLHOS (brancos com pupilas) ----
-  ctx.fillStyle = "white";
-  ctx.beginPath();
-  ctx.arc(x + 10, y + 5, 5, 0, Math.PI * 2); // Olho esquerdo
-  ctx.arc(x + 30, y + 5, 5, 0, Math.PI * 2);  // Olho direito
-  ctx.fill();
-  
-  ctx.fillStyle = "black";
-  ctx.beginPath();
-  ctx.arc(x + 10, y + 5, 2, 0, Math.PI * 2); // Pupila esquerda
-  ctx.arc(x + 30, y + 5, 2, 0, Math.PI * 2); // Pupila direita
-  ctx.fill();
-
-  // ---- BRAÇOS (agora 100% visíveis) ----
-  ctx.strokeStyle = "#388E3C"; // Verde mais escuro
-  ctx.lineWidth = 4; // Linhas mais grossas
+  // ---- 2. BRAÇOS (desenho DEPOIS do corpo) ----
+  ctx.strokeStyle = "#2E7D32"; // Verde escuro (contraste)
+  ctx.lineWidth = 4; // Mais grossos
 
   // Braço esquerdo (horizontal + antebraço para cima)
   ctx.beginPath();
   ctx.moveTo(x + 15, y + 18); // Ombro
-  ctx.lineTo(x + 5, y + 18);  // Braço (horizontal para fora)
-  ctx.lineTo(x + 5, y + 8);   // Antebraço (vertical para cima)
+  ctx.lineTo(x + 5, y + 18);  // Braço horizontal
+  ctx.lineTo(x + 5, y + 8);   // Antebraço (para cima)
   ctx.stroke();
 
   // Braço direito (espelhado)
@@ -240,8 +227,21 @@
   ctx.lineTo(x + 35, y + 8);
   ctx.stroke();
 
-  // ---- PERNAS (articulando no pulo) ----
-  ctx.strokeStyle = "#2E7D32";
+  // ---- 3. OLHOS (por cima dos braços) ----
+  ctx.fillStyle = "white";
+  ctx.beginPath();
+  ctx.arc(x + 10, y + 5, 5, 0, Math.PI * 2);
+  ctx.arc(x + 30, y + 5, 5, 0, Math.PI * 2);
+  ctx.fill();
+  
+  ctx.fillStyle = "black";
+  ctx.beginPath();
+  ctx.arc(x + 10, y + 5, 2, 0, Math.PI * 2);
+  ctx.arc(x + 30, y + 5, 2, 0, Math.PI * 2);
+  ctx.fill();
+
+  // ---- 4. PERNAS (último para ficar na frente) ----
+  ctx.strokeStyle = "#388E3C";
   ctx.lineWidth = 3;
 
   // Ângulo das pernas (45° em repouso, 90° no pulo)
@@ -249,7 +249,7 @@
 
   // Perna esquerda
   ctx.beginPath();
-  ctx.moveTo(x + 12, y + 25); // Quadril
+  ctx.moveTo(x + 12, y + 25);
   ctx.lineTo(
     x + 5 - Math.cos(legAngle) * 10, 
     y + 25 + Math.sin(legAngle) * 20
