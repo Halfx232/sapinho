@@ -218,6 +218,7 @@
       z-index: 100;
       opacity: 0.8;
     `;
+    }
     document.body.appendChild(jumpButton);
 
     jumpButton.addEventListener('touchstart', (e) => {
@@ -449,15 +450,7 @@ function atualizarPoeira() {
 
       requestAnimationFrame(gameLoop);
     }
-      // Novo script para funcionar com mobile
-      document.addEventListener('keydown', (e) => {
-    if ((e.code === 'Space' || e.key === 'ArrowUp') && !sapo.jumping) {
-      sapo.vy = -20;
-      sapo.jumping = true;
-      jumpSound.play().catch(e => {});
-    }
-  });
-}
+      
       // Pular apenas com espaço (quando o jogo já estiver rodando)
       if (gameStarted && !sapo.jumping && event.code === "Space") {
         sapo.vy = -20;
@@ -519,16 +512,44 @@ async function atualizarHora() {
 }
 // Espera o jogo carregar antes de chamar as APIs
 window.addEventListener('load', () => {
-  resetGame(); // Inicia o jogo primeiro
+  resizeCanvas();
+  setupControls();
+  resetGame();
+  
+  // APIs (com delay para não travar o jogo)
   setTimeout(() => {
-    fetchWeather(); // Depois tenta buscar o clima
-    atualizarHora(); // E a hora
-    setInterval(atualizarHora, 30000); // Atualiza a cada 30s
-  }, 1000); // Delay de 1s para não travar o início
+    fetchWeather();
+    atualizarHora();
+    setInterval(atualizarHora, 30000);
+  }, 1000);
+
+    // Evento de tecla único e funcional
+  document.addEventListener('keydown', (e) => {
+    if (!gameStarted && startBanner.style.display === 'block') {
+      startBanner.style.display = 'none';
+      iniciarJogo();
+    }
+    if (gameStarted && !sapo.jumping && (e.code === 'Space' || e.key === 'ArrowUp')) {
+      sapo.vy = -20;
+      sapo.jumping = true;
+      jumpSound.play().catch(e => {});
+      // Partículas de pulo
+      for (let i = 0; i < 10; i++) {
+        poeira.push({
+          x: sapo.x + 15 + Math.random() * 10,
+          y: sapo.y + 30,
+          raio: 3 + Math.random() * 5,
+          alpha: 0.7,
+          vy: -1 - Math.random() * 2,
+          vx: Math.random() * 2 - 1
+        });
+      }
+    }
+  });
 });
 
    // resetGame();
-
+    
   </script>
 </body>
 </html>
