@@ -5,6 +5,17 @@
   <title>🐸 Jogo do Sapinho</title>
   <link rel="icon" href="https://em-content.zobj.net/thumbs/160/twitter/322/frog_1f438.png" type="image/png">
   <style>
+    /* Evita comportamentos indesejados no mobile */
+  body {
+  touch-action: manipulation;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Remove borda azul no toque (Android) */
+  button:focus {
+  outline: none;
+}
     body {
       margin: 0;
       padding: 0;
@@ -141,6 +152,13 @@
   <div id="footer">🐸 Siga o Sapinho nas redes sociais! Instagram | YouTube | TikTok</div>
 
   <script>
+     // Detecta se é mobile
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    let canvasScale = isMobile ? 0.8 : 1;
+
+     // Botão de pulo para mobile (criado dinamicamente)
+    let jumpButton;
+    // Fim do script mobile
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
     const jumpSound = document.getElementById("jumpSound");
@@ -180,6 +198,37 @@
     let sapo, obstaculos, tempo, intervaloObstaculo, faseAtual, pontuacao;
     // ⬇️ Adicione esta linha:
     let poeira = []; // Array para guardar as partículas
+
+    function setupControls() {
+  // Controle por toque (mobile)
+  if (isMobile) {
+    jumpButton = document.createElement('button');
+    jumpButton.textContent = '↑ PULAR';
+    jumpButton.style.cssText = `
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 80px;
+      height: 80px;
+      font-size: 20px;
+      z-index: 100;
+      opacity: 0.8;
+    `;
+    document.body.appendChild(jumpButton);
+
+    jumpButton.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      if (!sapo.jumping) {
+        sapo.vy = -20;
+        sapo.jumping = true;
+        jumpSound.play().catch(e => {});
+      }
+    });
+  }
 
     function resetGame() {
       sapo = { x: 100, y: 300, width: 40, height: ALTURA_SAPO, vy: 0, jumping: false };
@@ -346,7 +395,18 @@ function atualizarPoeira() {
       ctx.fillStyle = "#000";
       ctx.font = "bold 18px Arial";
       ctx.fillText("Score: " + pontuacao, 10, 25);
-    }
+      }
+      // Função nova para mobile
+      function resizeCanvas() {
+    if (isMobile) {
+    const maxWidth = window.innerWidth * 0.9;
+    const maxHeight = window.innerHeight * 0.6;
+    
+          canvas.width = Math.min(800 * canvasScale, maxWidth);
+          canvas.height = Math.min(400 * canvasScale, maxHeight);
+          canvas.style.margin = '10px auto';
+  }
+}
 
     function verificarColisao() {
       for (let obs of obstaculos) {
@@ -389,15 +449,15 @@ function atualizarPoeira() {
 
       requestAnimationFrame(gameLoop);
     }
-
-    document.addEventListener("keydown", (event) => {
-      // Iniciar o jogo com qualquer tecla (se estiver na tela inicial)
-      if (!gameStarted && startBanner.style.display === "block") {
-        startBanner.style.display = "none";
-        iniciarJogo();
-        return;
+      // Novo script para funcionar com mobile
+      document.addEventListener('keydown', (e) => {
+    if ((e.code === 'Space' || e.key === 'ArrowUp') && !sapo.jumping) {
+      sapo.vy = -20;
+      sapo.jumping = true;
+      jumpSound.play().catch(e => {});
     }
-
+  });
+}
       // Pular apenas com espaço (quando o jogo já estiver rodando)
       if (gameStarted && !sapo.jumping && event.code === "Space") {
         sapo.vy = -20;
@@ -457,17 +517,11 @@ async function atualizarHora() {
     console.warn("Erro no relógio:", error); // Não quebra o jogo
   }
 }
-
-// ===== INICIALIZAÇÃO SEGURA =====
-// Espera o jogo carregar antes de chamar as APIs
+// Substitua o window.addEventListener('load', ...) existente por:
 window.addEventListener('load', () => {
-  resetGame(); // Inicia o jogo primeiro
-  setTimeout(() => {
-    fetchWeather(); // Depois tenta buscar o clima
-    atualizarHora(); // E a hora
-    setInterval(atualizarHora, 30000); // Atualiza a cada 30s
-  }, 1000); // Delay de 1s para não travar o início
-});
+  resizeCanvas();
+  setupControls(); // Agora a função existe!
+  resetGame();
 
    // resetGame();
 
