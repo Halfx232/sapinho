@@ -517,11 +517,15 @@ async function atualizarHora() {
     console.warn("Erro no relógio:", error); // Não quebra o jogo
   }
 }
-// Substitua o window.addEventListener('load', ...) existente por:
+// Espera o jogo carregar antes de chamar as APIs
 window.addEventListener('load', () => {
-  resizeCanvas();
-  setupControls(); // Agora a função existe!
-  resetGame();
+  resetGame(); // Inicia o jogo primeiro
+  setTimeout(() => {
+    fetchWeather(); // Depois tenta buscar o clima
+    atualizarHora(); // E a hora
+    setInterval(atualizarHora, 30000); // Atualiza a cada 30s
+  }, 1000); // Delay de 1s para não travar o início
+});
 
    // resetGame();
 
