@@ -23,7 +23,13 @@
       background: #e0f7fa;
       overflow: hidden;
     }
-    #top-bar {
+    #jumpButtonMobile {
+     position: fixed;
+     bottom: 20px;
+     right: 20px;
+     z-index: 1000;
+    ]
+      #top-bar {
       display: flex;
       justify-content: space-between;
       background: #00796b;
@@ -230,6 +236,7 @@
       }
     });
   }
+  } // ← Esta chave estava faltando
 
     function resetGame() {
       sapo = { x: 100, y: 300, width: 40, height: ALTURA_SAPO, vy: 0, jumping: false };
@@ -523,7 +530,7 @@ window.addEventListener('load', () => {
     setInterval(atualizarHora, 30000);
   }, 1000);
 
-    // Evento de tecla único e funcional
+  // Evento de tecla único
   document.addEventListener('keydown', (e) => {
     if (!gameStarted && startBanner.style.display === 'block') {
       startBanner.style.display = 'none';
