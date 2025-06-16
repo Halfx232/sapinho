@@ -5,120 +5,264 @@
   <title>🐸 Jogo do Sapinho</title>
   <link rel="icon" href="https://em-content.zobj.net/thumbs/160/twitter/322/frog_1f438.png" type="image/png">
   <style>
-    /* Evita comportamentos indesejados no mobile */
-  body {
-  touch-action: manipulation;
-  overflow: hidden;
-  -webkit-tap-highlight-color: transparent;
-  }
-
-  /* Remove borda azul no toque (Android) */
-  button:focus {
-  outline: none;
-}
     body {
+      touch-action: manipulation;
+      overflow: hidden;
+      -webkit-tap-highlight-color: transparent;
       margin: 0;
       padding: 0;
       font-family: sans-serif;
       background: #e0f7fa;
-      overflow: hidden;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
+
+    button:focus {
+      outline: none;
+    }
+
     #jumpButtonMobile {
-     position: fixed;
-     bottom: 20px;
-     right: 20px;
-     z-index: 1000;
-    ]
-      #top-bar {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 1000;
+    }
+
+    #top-bar {
       display: flex;
       justify-content: space-between;
       background: #00796b;
       color: white;
       padding: 10px;
+      width: 100%;
+      box-sizing: border-box;
     }
+
     #weather, #clock {
       width: 50%;
       text-align: center;
+      font-size: 14px;
     }
-      #game-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 20px;
-  position: relative;
-  gap: 40px; /* Espaço entre os banners e o canvas */
-}
 
-       #left-ad, #right-ad {
-  width: 300px;
-  height: 600px;
-  background: #cfd8dc;
-  margin: 0; /* Removemos a margem lateral anterior */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 14px;
-  color: #455a64;
-  border-radius: 8px; /* Opcional: bordas arredondadas */
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Opcional: sombra sutil */
-}
+    #game-container {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      flex-grow: 1;
+      position: relative;
+      gap: 10px;
+      padding: 5px;
+      box-sizing: border-box;
+      overflow: hidden;
+      max-width: 100vw;
+    }
+
+    #left-ad, #right-ad {
+      width: 160px;
+      height: 300px;
+      background: #cfd8dc;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 10px;
+      line-height: 1.2;
+      font-size: 12px;
+      color: #455a64;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      flex-shrink: 0;
+    }
+
     canvas {
       border: 2px solid #0288d1;
       z-index: 1;
+      max-width: 100%;
+      max-height: 100%;
     }
+
     #footer {
-      position: fixed;
-      bottom: 0;
       width: 100%;
       text-align: center;
       background: #004d40;
       color: white;
       padding: 10px;
       font-size: 14px;
+      box-sizing: border-box;
     }
+
     #start-banner, #game-over-banner, #victory-banner {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
       background: rgba(255, 255, 255, 0.9);
-      padding: 30px;
+      padding: 20px;
       text-align: center;
       border: 3px solid #00796b;
       border-radius: 12px;
       z-index: 2;
+      max-width: 90%;
     }
+
     #start-banner h1 {
-      font-size: 32px;
-      color: #2e7d32;
-      margin-bottom: 20px;
-    }
-    #start-banner p {
       font-size: 24px;
+      color: #2e7d32;
+      margin-bottom: 15px;
+    }
+
+    #start-banner p {
+      font-size: 18px;
       color: #d32f2f;
       animation: blink 1s infinite;
     }
+
     #game-over-banner h2, #victory-banner h2 {
-      font-size: 28px;
+      font-size: 22px;
       color: #c62828;
     }
+
     #game-over-banner p, #victory-banner p {
-      font-size: 22px;
+      font-size: 18px;
       margin-top: 10px;
     }
+
     #restart-button, #play-again-button {
-      margin-top: 20px;
-      padding: 10px 20px;
-      font-size: 18px;
+      margin-top: 15px;
+      padding: 8px 16px;
+      font-size: 16px;
       background-color: #00796b;
       color: white;
       border: none;
       border-radius: 8px;
       cursor: pointer;
     }
+
+    #orientation-message {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      font-size: 28px;
+      text-align: center;
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      padding: 20px;
+    }
+
     @keyframes blink {
       0%, 100% { opacity: 1; }
       50% { opacity: 0; }
+    }
+
+    @media (min-width: 1024px) {
+      #game-container {
+        gap: 30px;
+        margin: 20px auto 0 auto;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        height: 600px;
+        position: relative;
+        padding: 0 20px;
+        width: auto;
+        max-width: none;
+        overflow: visible;
+      }
+
+      #left-ad, #right-ad {
+        width: 300px !important;
+        height: 600px !important;
+        font-size: 14px;
+        padding: 0 !important;
+        background: #cfd8dc;
+        color: #455a64;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        flex-shrink: 0;
+        position: relative !important;
+      }
+
+      #left-ad > div, #right-ad > div {
+        position: absolute !important;
+        top: 0;
+        left: 0;
+        width: 100% !important;
+        height: 100% !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+      }
+
+      #left-ad span, #right-ad span {
+        position: absolute !important;
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        text-align: center !important;
+        line-height: normal !important;
+        margin: 0 !important;
+        padding: 0 10px !important;
+        font-size: inherit !important;
+        white-space: nowrap !important;
+        max-width: 90% !important;
+      }
+
+      #start-banner h1 {
+        font-size: 32px;
+      }
+
+      #start-banner p {
+        font-size: 24px;
+      }
+
+      #game-over-banner h2, #victory-banner h2 {
+        font-size: 28px;
+      }
+
+      #game-over-banner p, #victory-banner p {
+        font-size: 22px;
+      }
+
+      #restart-button, #play-again-button {
+        padding: 10px 20px;
+        font-size: 18px;
+      }
+    }
+
+    @media (orientation: landscape) and (max-width: 1023px) {
+      #game-container {
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: center;
+        padding: 5px;
+      }
+
+      #left-ad, #right-ad {
+        width: 120px;
+        height: 240px;
+      }
+
+      canvas {
+        max-height: 85vh;
+      }
+    }
+
+    @media (orientation: portrait) and (max-width: 1023px) {
+      #game-container {
+        display: none;
+      }
+
+      #orientation-message {
+        display: flex;
+      }
     }
   </style>
 </head>
@@ -128,14 +272,18 @@
     <div id="clock">Relógio e Calendário (API WorldTimeAPI)</div>
   </div>
 
+  <div id="orientation-message">
+    <p>Por favor, gire seu dispositivo para a orientação horizontal para jogar.</p>
+  </div>
+
   <div id="game-container">
-    <div id="left-ad">Banner AdSense Esquerdo (300x600)</div>
+    <div id="left-ad"><div><span>Banner AdSense Esquerdo</span></div></div>
     <canvas id="gameCanvas" width="800" height="400"></canvas>
-    <div id="right-ad">Banner AdSense Direito (300x600)</div>
+    <div id="right-ad"><div><span>Banner AdSense Direito</span></div></div>
 
     <div id="start-banner">
       <h1>🐸 Sejam bem-vindos ao Jogo do Sapinho!</h1>
-      <p>Pressione qualquer tecla para iniciar o jogo</p>
+      <p>Pressione qualquer tecla ou toque para iniciar o jogo</p>
     </div>
 
     <div id="game-over-banner" style="display:none">
@@ -158,27 +306,52 @@
   <div id="footer">🐸 Siga o Sapinho nas redes sociais! Instagram | YouTube | TikTok</div>
 
   <script>
-     // Detecta se é mobile
+    function debounce(func, wait) {
+      let timeout;
+      return function executedFunction(...args) {
+        const later = () => {
+          clearTimeout(timeout);
+          func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+      };
+    }
+
     const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     let canvasScale = isMobile ? 0.8 : 1;
-
-     // Botão de pulo para mobile (criado dinamicamente)
     let jumpButton;
-    // Fim do script mobile
+
+    function handleOrientation() {
+      if (!isMobile) return;
+      const orientationMessage = document.getElementById('orientation-message');
+      const gameContainer = document.getElementById('game-container');
+      function checkOrientation() {
+        if (window.innerWidth > window.innerHeight) {
+          orientationMessage.style.display = 'none';
+          gameContainer.style.display = 'flex';
+          resizeCanvas();
+        } else {
+          orientationMessage.style.display = 'flex';
+          gameContainer.style.display = 'none';
+        }
+      }
+      checkOrientation();
+      window.addEventListener('orientationchange', checkOrientation);
+      window.addEventListener('resize', debounce(checkOrientation, 100));
+      if (screen.orientation && screen.orientation.lock) {
+        screen.orientation.lock('landscape').catch(e => console.log('Erro ao travar orientação:', e));
+      }
+    }
+
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
     const jumpSound = document.getElementById("jumpSound");
-    // ⬇️⬇️ ADICIONE ISSO ⬇️⬇️
-    jumpSound.preload = 'auto';  // Pré-carrega o som
-    jumpSound.volume = 0.3;      // Ajusta o volume (opcional)
+    jumpSound.preload = 'auto';
+    jumpSound.volume = 0.3;
     const failSound = document.getElementById("failSound");
     const victorySound = document.getElementById("victorySound");
-    // ⬇️⬇️ ADICIONE AQUI ⬇️⬇️ (SOLUÇÃO PARA BLOQUEIO DE ÁUDIO)
-    document.body.addEventListener('click', () => {
-    jumpSound.play().then(() => {}).catch(e => {});
-    failSound.play().then(() => {}).catch(e => {});
-    victorySound.play().then(() => {}).catch(e => {});
-    }, { once: true });
+
     const startBanner = document.getElementById("start-banner");
     const gameOverBanner = document.getElementById("game-over-banner");
     const finalScore = document.getElementById("final-score");
@@ -197,51 +370,64 @@
 
     const PONTUACAO_VITORIA = 5000;
     const GRAVIDADE = 1.5;
-    const ALTURA_CHAO = 340;
+    const ALTURA_CHAO = 288;
     const ALTURA_SAPO = 40;
+    const ESPESSURA_CHAO = 76; // 50% da espessura anterior (152px)
 
     let gameStarted = false;
-    let sapo, obstaculos, tempo, intervaloObstaculo, faseAtual, pontuacao;
-    // ⬇️ Adicione esta linha:
-    let poeira = []; // Array para guardar as partículas
+    let sapo, obstaculos = [], tempo, intervaloObstaculo, faseAtual, pontuacao;
+    let poeira = [];
 
     function setupControls() {
-  // Controle por toque (mobile)
-  if (isMobile) {
-    jumpButton = document.createElement('button');
-    jumpButton.textContent = '↑ PULAR';
-    jumpButton.style.cssText = `
-      position: fixed;
-      bottom: 30px;
-      right: 30px;
-      background: #4CAF50;
-      color: white;
-      border: none;
-      border-radius: 50%;
-      width: 80px;
-      height: 80px;
-      font-size: 20px;
-      z-index: 100;
-      opacity: 0.8;
-    `;
-    }
-    document.body.appendChild(jumpButton);
-
-    jumpButton.addEventListener('touchstart', (e) => {
-      e.preventDefault();
-      if (!sapo.jumping) {
-        sapo.vy = -20;
-        sapo.jumping = true;
-        jumpSound.play().catch(e => {});
+      if (jumpButton) {
+        jumpButton.remove();
       }
-    });
-  }
-  } // ← Esta chave estava faltando
+      if (isMobile) {
+        jumpButton = document.createElement('button');
+        jumpButton.id = 'jumpButtonMobile';
+        jumpButton.textContent = '↑ PULAR';
+        jumpButton.style.cssText = `
+          position: fixed;
+          bottom: 20px;
+          right: 20px;
+          background: #4CAF50;
+          color: white;
+          border: none;
+          border-radius: 50%;
+          width: 80px;
+          height: 80px;
+          font-size: 20px;
+          z-index: 100;
+          opacity: 0.8;
+        `;
+        document.body.appendChild(jumpButton);
+
+        jumpButton.addEventListener('touchstart', (e) => {
+          e.preventDefault();
+          if (gameStarted && !sapo.jumping) {
+            sapo.vy = -20;
+            sapo.jumping = true;
+            jumpSound.currentTime = 0;
+            jumpSound.play().catch(e => console.log("Erro ao tocar som:", e));
+            for (let i = 0; i < 10; i++) {
+              poeira.push({
+                x: sapo.x + 15 + Math.random() * 10,
+                y: sapo.y + 30,
+                raio: 3 + Math.random() * 5,
+                alpha: 0.7,
+                vy: -1 - Math.random() * 2,
+                vx: Math.random() * 2 - 1
+              });
+            }
+          }
+        });
+      }
+    }
 
     function resetGame() {
-      sapo = { x: 100, y: 300, width: 40, height: ALTURA_SAPO, vy: 0, jumping: false };
+      sapo = { x: 100, y: ALTURA_CHAO - ESPESSURA_CHAO, width: 40, height: ALTURA_SAPO, vy: 0, jumping: false };
       obstaculos = [];
-      poeira = []; // ⬅️ LINHA ADICIONADA AQUI
+      poeira = [];
       tempo = 0;
       intervaloObstaculo = 120;
       faseAtual = 0;
@@ -250,6 +436,7 @@
       victoryBanner.style.display = "none";
       startBanner.style.display = "block";
       gameStarted = false;
+      setupControls();
     }
 
     function getFaseAtual() {
@@ -258,163 +445,139 @@
 
     function drawChao() {
       ctx.fillStyle = coresFase[getFaseAtual()].chao;
-      ctx.fillRect(0, ALTURA_CHAO, canvas.width, 5);
+      ctx.clearRect(0, ALTURA_CHAO - ESPESSURA_CHAO, canvas.width, ESPESSURA_CHAO);
+      ctx.fillRect(0, ALTURA_CHAO - ESPESSURA_CHAO, canvas.width, ESPESSURA_CHAO);
+      console.log("Desenhando chão de", ALTURA_CHAO - ESPESSURA_CHAO, "a", ALTURA_CHAO, "com cor", coresFase[getFaseAtual()].chao, "contexto válido:", !!ctx, "largura do canvas:", canvas.width);
     }
 
     function drawSapo() {
-  const { x, y, jumping } = sapo;
+      const { x, y, jumping } = sapo;
+      ctx.fillStyle = "green";
+      ctx.beginPath();
+      ctx.ellipse(x + 25, y + 18, 22, 15, 0, 0, Math.PI * 2);
+      ctx.fill();
 
-  // ---- CORPO (20% maior) ----
-  ctx.fillStyle = "green";
-  ctx.beginPath();
-  ctx.ellipse(x + 25, y + 18, 22, 15, 0, 0, Math.PI * 2); // Aumentei raios para 22 e 15
-  ctx.fill();
+      ctx.strokeStyle = "green";
+      ctx.lineWidth = 3;
+      const armAngle = jumping ? Math.PI/2 : Math.PI/4;
+      ctx.beginPath();
+      ctx.moveTo(x + 18, y + 20);
+      ctx.lineTo(x + 5, y + 20);
+      ctx.lineTo(x + 5 - Math.cos(armAngle) * 18, y + 20 + Math.sin(armAngle) * 18);
+      ctx.stroke();
 
-  // ---- BRAÇOS (mais finos e proporcionais) ----
-  ctx.strokeStyle = "green";
-  ctx.lineWidth = 3; // Reduzi de 4 para 3 (mais fino que as pernas)
+      ctx.beginPath();
+      ctx.moveTo(x + 32, y + 20);
+      ctx.lineTo(x + 45, y + 20);
+      ctx.lineTo(x + 45 + Math.cos(armAngle) * 18, y + 20 + Math.sin(armAngle) * 18);
+      ctx.stroke();
 
-  // Ângulo do antebraço (45° em repouso, 90° no pulo)
-  const armAngle = jumping ? Math.PI/2 : Math.PI/4;
+      ctx.fillStyle = "yellow";
+      ctx.beginPath();
+      ctx.arc(x + 15, y + 8, 6, 0, Math.PI * 2);
+      ctx.arc(x + 35, y + 8, 6, 0, Math.PI * 2);
+      ctx.fill();
 
-  // Braço esquerdo (agora mais longo)
-  ctx.beginPath();
-  ctx.moveTo(x + 18, y + 20); // Ombro ajustado
-  ctx.lineTo(x + 5, y + 20);  // Braço horizontal
-  ctx.lineTo(
-    x + 5 - Math.cos(armAngle) * 18, // Antebraço mais longo
-    y + 20 + Math.sin(armAngle) * 18
-  );
-  ctx.stroke();
+      ctx.fillStyle = "black";
+      ctx.beginPath();
+      ctx.arc(x + 15, y + 8, 2, 0, Math.PI * 2);
+      ctx.arc(x + 35, y + 8, 2, 0, Math.PI * 2);
+      ctx.fill();
 
-  // Braço direito
-  ctx.beginPath();
-  ctx.moveTo(x + 32, y + 20); // Ombro ajustado
-  ctx.lineTo(x + 45, y + 20);
-  ctx.lineTo(
-    x + 45 + Math.cos(armAngle) * 18,
-    y + 20 + Math.sin(armAngle) * 18
-  );
-  ctx.stroke();
+      ctx.strokeStyle = "black";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(x + 25, y + 18, 8, 0.3, Math.PI - 0.3);
+      ctx.stroke();
 
-  // ---- OLHOS ----
-  ctx.fillStyle = "yellow";
-  ctx.beginPath();
-  ctx.arc(x + 15, y + 8, 6, 0, Math.PI * 2); // Olhos reposicionados
-  ctx.arc(x + 35, y + 8, 6, 0, Math.PI * 2);
-  ctx.fill();
-  
-  ctx.fillStyle = "black";
-  ctx.beginPath();
-  ctx.arc(x + 15, y + 8, 2, 0, Math.PI * 2);
-  ctx.arc(x + 35, y + 8, 2, 0, Math.PI * 2);
-  ctx.fill();
+      ctx.strokeStyle = "green";
+      ctx.lineWidth = 4;
+      const legAngle = jumping ? Math.PI/2 : Math.PI/4;
+      ctx.beginPath();
+      ctx.moveTo(x + 15, y + 30);
+      ctx.lineTo(x + 5 - Math.cos(legAngle) * 12, y + 30 + Math.sin(legAngle) * 25);
+      ctx.moveTo(x + 35, y + 30);
+      ctx.lineTo(x + 45 + Math.cos(legAngle) * 12, y + 30 + Math.sin(legAngle) * 25);
+      ctx.stroke();
+    }
 
- // ---- BOCA (sorriso aberto) ----
-ctx.strokeStyle = "black";
-ctx.lineWidth = 2;
-ctx.beginPath();
-ctx.arc(x + 25, y + 18, 8, 0.3, Math.PI - 0.3); // Ângulos ajustados para abrir mais
-ctx.stroke();
-
-  // ---- PERNAS (proporção ajustada) ----
-  ctx.strokeStyle = "green";
-  ctx.lineWidth = 4; // Pernas um pouco mais grossas que braços
-
-  const legAngle = jumping ? Math.PI/2 : Math.PI/4;
-  ctx.beginPath();
-  // Perna esquerda
-  ctx.moveTo(x + 15, y + 30); // Quadril ajustado
-  ctx.lineTo(
-    x + 5 - Math.cos(legAngle) * 12,
-    y + 30 + Math.sin(legAngle) * 25 // Pernas mais longas
-  );
-  // Perna direita
-  ctx.moveTo(x + 35, y + 30);
-  ctx.lineTo(
-    x + 45 + Math.cos(legAngle) * 12,
-    y + 30 + Math.sin(legAngle) * 25
-  );
-  ctx.stroke();
- }
     function drawObstaculo(obs) {
       ctx.fillStyle = obs.color;
       ctx.fillRect(obs.x, obs.y, obs.width, obs.height);
     }
-    // ⬇️ COLE ISSO AQUI 
-function atualizarPoeira() {
-    for (let i = 0; i < poeira.length; i++) {
-    const p = poeira[i];
-    ctx.fillStyle = `rgba(143, 188, 143, ${p.alpha})`; // Cor cinza-claro
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, p.raio, 0, Math.PI * 2);
-    ctx.fill();
 
-    // Atualiza posição e propriedades
-    p.x += p.vx;       // Move horizontalmente
-    p.y += p.vy;       // Move verticalmente (para cima)
-    p.raio -= 0.1;     // Diminui devagar
-    p.alpha -= 0.01;   // Desaparece lentamente
-    p.vy *= 0.98;      // Desacelera o movimento vertical
-  }
-
-  // Remove partículas muito pequenas ou transparentes
-  poeira = poeira.filter(p => p.raio > 0.2 && p.alpha > 0.05);
-}
+    function atualizarPoeira() {
+      for (let i = 0; i < poeira.length; i++) {
+        const p = poeira[i];
+        ctx.fillStyle = `rgba(143, 188, 143, ${p.alpha})`;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.raio, 0, Math.PI * 2);
+        ctx.fill();
+        p.x += p.vx;
+        p.y += p.vy;
+        p.raio -= 0.1;
+        p.alpha -= 0.02;
+        p.vy *= 0.98;
+      }
+      poeira = poeira.filter(p => p.raio > 0.2 && p.alpha > 0.05);
+    }
 
     function atualizarJogo() {
       const fase = getFaseAtual();
       canvas.style.background = coresFase[fase].fundo;
-
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       drawChao();
-
       sapo.vy += GRAVIDADE;
       sapo.y += sapo.vy;
-      if (sapo.y > 300) {
-        sapo.y = 300;
+      if (sapo.y > ALTURA_CHAO - ESPESSURA_CHAO) {
+        sapo.y = ALTURA_CHAO - ESPESSURA_CHAO;
+        sapo.vy = 0;
         sapo.jumping = false;
       }
       drawSapo();
-      atualizarPoeira(); // ⬅️ ADICIONE ESTA LINHA!
-
+      console.log("Desenhando sapo em x:", sapo.x, "y:", sapo.y);
+      atualizarPoeira();
       if (tempo % intervaloObstaculo === 0) {
         let cores = ["#d32f2f", "#fbc02d", "#7b1fa2", "#00796b"];
         let cor = cores[Math.floor(Math.random() * cores.length)];
-        obstaculos.push({ x: canvas.width, y: 310, width: 30, height: 30, color: cor });
+        obstaculos.push({ x: canvas.width, y: ALTURA_CHAO - ESPESSURA_CHAO, width: 30, height: 30, color: cor });
       }
-
       for (let i = 0; i < obstaculos.length; i++) {
         let obs = obstaculos[i];
         obs.x -= 5;
         drawObstaculo(obs);
       }
-
       obstaculos = obstaculos.filter(obs => obs.x + obs.width > 0);
-
       tempo++;
       pontuacao++;
-
       if (tempo % 1500 === 0) {
         faseAtual++;
         intervaloObstaculo = Math.max(60, intervaloObstaculo - 10);
       }
-
       ctx.fillStyle = "#000";
       ctx.font = "bold 18px Arial";
       ctx.fillText("Score: " + pontuacao, 10, 25);
+    }
+
+    function resizeCanvas() {
+      if (isMobile) {
+        const isLandscape = window.innerWidth > window.innerHeight;
+        if (!isLandscape) {
+          return;
+        }
+        const maxWidth = window.innerWidth * 0.9;
+        const maxHeight = window.innerHeight * 0.85;
+        canvas.width = Math.min(800 * canvasScale, maxWidth);
+        canvas.height = Math.min(400 * canvasScale, maxHeight);
+        canvas.style.margin = '10px auto';
+        canvas.style.display = 'block';
+      } else {
+        canvas.width = 800;
+        canvas.height = 400;
+        canvas.style.margin = '0 auto';
+        canvas.style.display = 'block';
       }
-      // Função nova para mobile
-      function resizeCanvas() {
-    if (isMobile) {
-    const maxWidth = window.innerWidth * 0.9;
-    const maxHeight = window.innerHeight * 0.6;
-    
-          canvas.width = Math.min(800 * canvasScale, maxWidth);
-          canvas.height = Math.min(400 * canvasScale, maxHeight);
-          canvas.style.margin = '10px auto';
-  }
-}
+    }
 
     function verificarColisao() {
       for (let obs of obstaculos) {
@@ -438,125 +601,111 @@ function atualizarPoeira() {
     function gameLoop() {
       if (!gameStarted) return;
       atualizarJogo();
-
       if (verificarColisao()) {
         gameStarted = false;
-        failSound.play();
+        failSound.play().catch(e => console.log("Erro ao tocar som:", e));
         finalScore.textContent = pontuacao;
         gameOverBanner.style.display = "block";
         return;
       }
-
       if (pontuacao >= PONTUACAO_VITORIA) {
         gameStarted = false;
-        victorySound.play();
+        victorySound.play().catch(e => console.log("Erro ao tocar som:", e));
         victoryScore.textContent = pontuacao;
         victoryBanner.style.display = "block";
         return;
       }
-
       requestAnimationFrame(gameLoop);
     }
-      
-      // Pular apenas com espaço (quando o jogo já estiver rodando)
-      if (gameStarted && !sapo.jumping && event.code === "Space") {
-        sapo.vy = -20;
-        sapo.jumping = true;
-        jumpSound.currentTime = 0;  // ⬅️ Reinicia o som
-        jumpSound.play().catch(e => {}); // ⬅️ Nova linha
-        // Cria 5 partículas de fumaça com movimento mais orgânico
-           for (let i = 0; i < 10; i++) {
-        poeira.push({
-        x: sapo.x + 15 + Math.random() * 10,  // Posição aleatória perto do sapo
-        y: sapo.y + 30,                       // Começa na "barriga" do sapo
-        raio: 3 + Math.random() * 5,          // Tamanho variado
-        alpha: 0.7,                           // Mais visível
-        vy: -1 - Math.random() * 2,           // Velocidade vertical (para cima)
-        vx: Math.random() * 2 - 1             // Movimento horizontal leve
-        });
+
+    const weatherElement = document.getElementById("weather");
+    const clockElement = document.getElementById("clock");
+
+    async function fetchWeather() {
+      try {
+        const API_KEY = "b8a0cd03c689322da2746720be31d534";
+        const city = "São Paulo";
+        const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&lang=pt_br&units=metric`);
+        if (!response.ok) throw new Error("Falha na API");
+        const data = await response.json();
+        const temp = Math.round(data.main.temp);
+        const description = data.weather[0].description;
+        weatherElement.textContent = `☀️ ${city}: ${temp}°C, ${description}`;
+      } catch (error) {
+        weatherElement.textContent = "Clima indisponível";
+        console.warn("Erro no clima:", error);
       }
-     }
-    }); // ESTAVA FALTANDO!
-    
+    }
+
+    async function atualizarHora() {
+      try {
+        const response = await fetch("https://worldtimeapi.org/api/timezone/America/Sao_Paulo");
+        if (!response.ok) throw new Error("Falha na API");
+        const data = await response.json();
+        const dateTime = new Date(data.datetime);
+        clockElement.textContent = `🕒 ${dateTime.toLocaleDateString()} - ${dateTime.toLocaleTimeString()}`;
+      } catch (error) {
+        const now = new Date();
+        clockElement.textContent = `🕒 ${now.toLocaleDateString()} - ${now.toLocaleTimeString()}`;
+        console.warn("Erro no relógio:", error);
+      }
+    }
+
+    window.addEventListener('load', () => {
+      handleOrientation();
+      resizeCanvas();
+      window.addEventListener('resize', debounce(resizeCanvas, 100));
+      setupControls();
+      resetGame();
+
+      document.body.addEventListener('touchstart', () => {
+        jumpSound.play().then(() => jumpSound.pause()).catch(e => console.log("Erro ao desbloquear áudio:", e));
+        failSound.play().then(() => failSound.pause()).catch(e => console.log("Erro ao desbloquear áudio:", e));
+        victorySound.play().then(() => failSound.pause()).catch(e => console.log("Erro ao desbloquear áudio:", e));
+      }, { once: true });
+
+      const startGameHandler = (e) => {
+        e.preventDefault();
+        console.log("Tentativa de iniciar o jogo. gameStarted:", gameStarted, "startBanner.display:", startBanner.style.display);
+        if (!gameStarted && startBanner.style.display === 'block') {
+          startBanner.style.display = 'none';
+          iniciarJogo();
+          console.log("Jogo iniciado!");
+        }
+      };
+
+      document.addEventListener('keydown', (e) => {
+        console.log("Tecla pressionada:", e.code);
+        startGameHandler(e);
+        if (gameStarted && !sapo.jumping && (e.code === 'Space' || e.code === 'ArrowUp')) {
+          sapo.vy = -20;
+          sapo.jumping = true;
+          jumpSound.currentTime = 0;
+          jumpSound.play().catch(e => console.log("Erro ao tocar som:", e));
+          for (let i = 0; i < 10; i++) {
+            poeira.push({
+              x: sapo.x + 15 + Math.random() * 10,
+              y: sapo.y + 30,
+              raio: 3 + Math.random() * 5,
+              alpha: 0.7,
+              vy: -1 - Math.random() * 2,
+              vx: Math.random() * 2 - 1
+            });
+          }
+        }
+      });
+
+      document.addEventListener('touchstart', startGameHandler);
+
+      setTimeout(() => {
+        fetchWeather();
+        atualizarHora();
+        setInterval(atualizarHora, 30000);
+      }, 1000);
+    });
+
     restartButton.addEventListener("click", resetGame);
     playAgainButton.addEventListener("click", resetGame);
-
-    // ===== CÓDIGO DAS APIs (MODIFICADO) =====
-const weatherElement = document.getElementById("weather");
-const clockElement = document.getElementById("clock");
-
-// Função para buscar clima (com timeout e tratamento de erro)
-async function fetchWeather() {
-  try {
-    const API_KEY = "b8a0cd03c689322da2746720be31d534";
-    const city = "São Paulo";
-    const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&lang=pt_br&units=metric`);
-    if (!response.ok) throw new Error("Falha na API");
-    const data = await response.json();
-    const temp = Math.round(data.main.temp);
-    const description = data.weather[0].description;
-    weatherElement.textContent = `☀️ ${city}: ${temp}°C, ${description}`;
-  } catch (error) {
-    weatherElement.textContent = "Clima indisponível";
-    console.warn("Erro no clima:", error); // Não quebra o jogo
-  }
-}
-
-// Função para atualizar hora (com fallback para horário local)
-async function atualizarHora() {
-  try {
-    const response = await fetch("https://worldtimeapi.org/api/timezone/America/Sao_Paulo");
-    if (!response.ok) throw new Error("Falha na API");
-    const data = await response.json();
-    const dateTime = new Date(data.datetime);
-    clockElement.textContent = `🕒 ${dateTime.toLocaleDateString()} - ${dateTime.toLocaleTimeString()}`;
-  } catch (error) {
-    // Fallback: usa o horário do sistema se a API falhar
-    const now = new Date();
-    clockElement.textContent = `🕒 ${now.toLocaleDateString()} - ${now.toLocaleTimeString()}`;
-    console.warn("Erro no relógio:", error); // Não quebra o jogo
-  }
-}
-// Espera o jogo carregar antes de chamar as APIs
-window.addEventListener('load', () => {
-  resizeCanvas();
-  setupControls();
-  resetGame();
-  
-  // APIs (com delay para não travar o jogo)
-  setTimeout(() => {
-    fetchWeather();
-    atualizarHora();
-    setInterval(atualizarHora, 30000);
-  }, 1000);
-
-  // Evento de tecla único
-  document.addEventListener('keydown', (e) => {
-    if (!gameStarted && startBanner.style.display === 'block') {
-      startBanner.style.display = 'none';
-      iniciarJogo();
-    }
-    if (gameStarted && !sapo.jumping && (e.code === 'Space' || e.key === 'ArrowUp')) {
-      sapo.vy = -20;
-      sapo.jumping = true;
-      jumpSound.play().catch(e => {});
-      // Partículas de pulo
-      for (let i = 0; i < 10; i++) {
-        poeira.push({
-          x: sapo.x + 15 + Math.random() * 10,
-          y: sapo.y + 30,
-          raio: 3 + Math.random() * 5,
-          alpha: 0.7,
-          vy: -1 - Math.random() * 2,
-          vx: Math.random() * 2 - 1
-        });
-      }
-    }
-  });
-});
-
-   // resetGame();
-    
   </script>
 </body>
 </html>
