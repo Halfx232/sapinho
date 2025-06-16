@@ -370,7 +370,7 @@
 
     const PONTUACAO_VITORIA = 5000;
     const GRAVIDADE = 1.5;
-    const ALTURA_CHAO = 288;
+    const ALTURA_CHAO = canvas.height - ESPESSURA_CHAO;
     const ALTURA_SAPO = 40;
     const ESPESSURA_CHAO = 76; // 50% da espessura anterior (152px)
 
@@ -425,7 +425,14 @@
     }
 
     function resetGame() {
-      sapo = { x: 100, y: ALTURA_CHAO - ESPESSURA_CHAO, width: 40, height: ALTURA_SAPO, vy: 0, jumping: false };
+      sapo = { 
+      x: 100, 
+      y: ALTURA_CHAO - ALTURA_SAPO,  // Alterado para posicionar o sapo em cima do chão
+      width: 40, 
+      height: ALTURA_SAPO, 
+      vy: 0, 
+      jumping: false 
+     };
       obstaculos = [];
       poeira = [];
       tempo = 0;
@@ -445,9 +452,7 @@
 
     function drawChao() {
       ctx.fillStyle = coresFase[getFaseAtual()].chao;
-      ctx.clearRect(0, ALTURA_CHAO - ESPESSURA_CHAO, canvas.width, ESPESSURA_CHAO);
-      ctx.fillRect(0, ALTURA_CHAO - ESPESSURA_CHAO, canvas.width, ESPESSURA_CHAO);
-      console.log("Desenhando chão de", ALTURA_CHAO - ESPESSURA_CHAO, "a", ALTURA_CHAO, "com cor", coresFase[getFaseAtual()].chao, "contexto válido:", !!ctx, "largura do canvas:", canvas.width);
+      ctx.fillRect(0, ALTURA_CHAO, canvas.width, ESPESSURA_CHAO);
     }
 
     function drawSapo() {
@@ -529,8 +534,8 @@
       drawChao();
       sapo.vy += GRAVIDADE;
       sapo.y += sapo.vy;
-      if (sapo.y > ALTURA_CHAO - ESPESSURA_CHAO) {
-        sapo.y = ALTURA_CHAO - ESPESSURA_CHAO;
+      if (sapo.y > ALTURA_CHAO - ALTURA_SAPO) {  // Alterado para verificar a posição em relação ao 
+        sapo.y = ALTURA_CHAO - ALTURA_SAPO;
         sapo.vy = 0;
         sapo.jumping = false;
       }
@@ -540,7 +545,13 @@
       if (tempo % intervaloObstaculo === 0) {
         let cores = ["#d32f2f", "#fbc02d", "#7b1fa2", "#00796b"];
         let cor = cores[Math.floor(Math.random() * cores.length)];
-        obstaculos.push({ x: canvas.width, y: ALTURA_CHAO - ESPESSURA_CHAO, width: 30, height: 30, color: cor });
+       obstaculos.push({ 
+       x: canvas.width, 
+       y: ALTURA_CHAO,  // Obstáculos agora ficam no topo do chão
+       width: 30, 
+       height: 30, 
+       color: cor 
+       });
       }
       for (let i = 0; i < obstaculos.length; i++) {
         let obs = obstaculos[i];
