@@ -11,7 +11,7 @@
       -webkit-tap-highlight-color: transparent;
       margin: 0;
       padding: 0;
-      font-family: sans-serif;
+      гиб-family: sans-sапrif;
       background: #e0f7fa;
       height: 100vh;
       display: flex;
@@ -426,7 +426,7 @@
 
     function resetGame() {
       ALTURA_CHAO = canvas.height; // Atualiza ALTURA_CHAO
-      sapo = { x: 100, y: ALTURA_CHAO - ESPESSURA_CHAO, width: 40, height: ALTURA_SAPO, vy: 0, jumping: false };
+      sapo = { x: 100, y: ALTURA_CHAO - ESPESSURA_CHAO - ALTURA_SAPO, width: 40, height: ALTURA_SAPO, vy: 0, jumping: false };
       obstaculos = [];
       poeira = [];
       tempo = 0;
@@ -530,8 +530,8 @@
       drawChao();
       sapo.vy += GRAVIDADE;
       sapo.y += sapo.vy;
-      if (sapo.y > ALTURA_CHAO - ESPESSURA_CHAO) {
-        sapo.y = ALTURA_CHAO - ESPESSURA_CHAO;
+      if (sapo.y > ALTURA_CHAO - ESPESSURA_CHAO - ALTURA_SAPO) {
+        sapo.y = ALTURA_CHAO - ESPESSURA_CHAO - ALTURA_SAPO;
         sapo.vy = 0;
         sapo.jumping = false;
       }
@@ -541,8 +541,8 @@
       if (tempo % intervaloObstaculo === 0) {
         let cores = ["#d32f2f", "#fbc02d", "#7b1fa2", "#00796b"];
         let cor = cores[Math.floor(Math.random() * cores.length)];
-        obstaculos.push({ x: canvas.width, y: ALTURA_CHAO - ESPESSURA_CHAO, width: 30, height: 30, color: cor });
-        console.log("Obstáculo criado em x:", canvas.width, "y:", ALTURA_CHAO - ESPESSURA_CHAO);
+        obstaculos.push({ x: canvas.width, y: ALTURA_CHAO - ESPESSURA_CHAO - 30, width: 30, height: 30, color: cor });
+        console.log("Obstáculo criado em x:", canvas.width, "y:", ALTURA_CHAO - ESPESSURA_CHAO - 30);
       }
       for (let i = 0; i < obstaculos.length; i++) {
         let obs = obstaculos[i];
@@ -580,6 +580,10 @@
         ALTURA_CHAO = canvas.height; // Atualiza ALTURA_CHAO
         canvas.style.margin = '0 auto';
         canvas.style.display = 'block';
+      }
+      // Reajusta a posição do sapo após redimensionamento
+      if (sapo) {
+        sapo.y = ALTURA_CHAO - ESPESSURA_CHAO - ALTURA_SAPO;
       }
     }
 
@@ -666,7 +670,7 @@
       document.body.addEventListener('touchstart', () => {
         jumpSound.play().then(() => jumpSound.pause()).catch(e => console.log("Erro ao desbloquear áudio:", e));
         failSound.play().then(() => failSound.pause()).catch(e => console.log("Erro ao desbloquear áudio:", e));
-        victorySound.play().then(() => failSound.pause()).catch(e => console.log("Erro ao desbloquear áudio:", e));
+        victorySound.play().then(() => victorySound.pause()).catch(e => console.log("Erro ao desbloquear áudio:", e));
       }, { once: true });
 
       const startGameHandler = (e) => {
