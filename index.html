@@ -370,9 +370,9 @@
 
     const PONTUACAO_VITORIA = 5000;
     const GRAVIDADE = 1.5;
-    const ALTURA_CHAO = canvas.height; // Chão na borda inferior
+    let ALTURA_CHAO = canvas.height; // Variável para suportar redimensionamento
     const ALTURA_SAPO = 40;
-    const ESPESSURA_CHAO = 76; // 50% da espessura anterior (152px)
+    const ESPESSURA_CHAO = 76;
 
     let gameStarted = false;
     let sapo, obstaculos = [], tempo, intervaloObstaculo, faseAtual, pontuacao;
@@ -425,19 +425,20 @@
     }
 
     function resetGame() {
-       sapboxing = { x: 100, y: ALTURA_CHAO - ESPESSURA_CHAO, width: 40, height: ALTURA_SAPO, vy: 0, jumping: false };
-     obstaculos = [];
-     poeira = [];
-     tempo = 0;
-     intervaloObstaculo = 120;
-     faseAtual = 0;
-     pontuacao = 0;
-     gameOverBanner.style.display = "none";
-     victoryBanner.style.display = "none";
-     startBanner.style.display = "block";
-     gameStarted = false;
-     setupControls();
-}
+      ALTURA_CHAO = canvas.height; // Atualiza ALTURA_CHAO
+      sapo = { x: 100, y: ALTURA_CHAO - ESPESSURA_CHAO, width: 40, height: ALTURA_SAPO, vy: 0, jumping: false };
+      obstaculos = [];
+      poeira = [];
+      tempo = 0;
+      intervaloObstaculo = 120;
+      faseAtual = 0;
+      pontuacao = 0;
+      gameOverBanner.style.display = "none";
+      victoryBanner.style.display = "none";
+      startBanner.style.display = "block";
+      gameStarted = false;
+      setupControls();
+    }
 
     function getFaseAtual() {
       return fases[faseAtual % fases.length];
@@ -541,6 +542,7 @@
         let cores = ["#d32f2f", "#fbc02d", "#7b1fa2", "#00796b"];
         let cor = cores[Math.floor(Math.random() * cores.length)];
         obstaculos.push({ x: canvas.width, y: ALTURA_CHAO - ESPESSURA_CHAO, width: 30, height: 30, color: cor });
+        console.log("Obstáculo criado em x:", canvas.width, "y:", ALTURA_CHAO - ESPESSURA_CHAO);
       }
       for (let i = 0; i < obstaculos.length; i++) {
         let obs = obstaculos[i];
@@ -569,11 +571,13 @@
         const maxHeight = window.innerHeight * 0.85;
         canvas.width = Math.min(800 * canvasScale, maxWidth);
         canvas.height = Math.min(400 * canvasScale, maxHeight);
+        ALTURA_CHAO = canvas.height; // Atualiza ALTURA_CHAO
         canvas.style.margin = '10px auto';
         canvas.style.display = 'block';
       } else {
         canvas.width = 800;
         canvas.height = 400;
+        ALTURA_CHAO = canvas.height; // Atualiza ALTURA_CHAO
         canvas.style.margin = '0 auto';
         canvas.style.display = 'block';
       }
@@ -594,6 +598,7 @@
     }
 
     function iniciarJogo() {
+      console.log("Iniciando jogo, gameStarted:", gameStarted, "sapo:", sapo);
       gameStarted = true;
       requestAnimationFrame(gameLoop);
     }
