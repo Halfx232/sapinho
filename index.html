@@ -373,7 +373,7 @@
     let ALTURA_CHAO = canvas.height; // Variável para suportar redimensionamento
     const ALTURA_SAPO = 40;
     const ESPESSURA_CHAO = 50;
-    const SAPO_OFFSET_VISUAL = 60; // Aumentado de 55 para 60 para descer o sapo
+    const SAPO_OFFSET_VISUAL = 50; // Reduzido de 55 para 50 para descer o sapo
 
     let gameStarted = false;
     let sapo, obstaculos = [], tempo, intervaloObstaculo, faseAtual, pontuacao;
@@ -537,7 +537,7 @@
         sapo.jumping = false;
       }
       drawSapo();
-      console.log("Desenhando sapo em x:", sapo.x, "y:", sapo.y, "base visual em:", sapo.y + SAPO_OFFSET_VISUAL - 5); // Ajuste no log para refletir a base visual real
+      console.log("Desenhando sapo em x:", sapo.x, "y:", sapo.y, "base visual em:", sapo.y + 50); // Ajustado para refletir a base real das pernas
       atualizarPoeira();
       if (tempo % intervaloObstaculo === 0) {
         let cores = ["#d32f2f", "#fbc02d", "#7b1fa2", "#00796b"];
