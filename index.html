@@ -11,7 +11,7 @@
       -webkit-tap-highlight-color: transparent;
       margin: 0;
       padding: 0;
-      гиб-family: sans-sапrif;
+      font-family: sans-serif; /* Corrigido de 'гиб-family: sans-sапrif' */
       background: #e0f7fa;
       height: 100vh;
       display: flex;
@@ -373,6 +373,7 @@
     let ALTURA_CHAO = canvas.height; // Variável para suportar redimensionamento
     const ALTURA_SAPO = 40;
     const ESPESSURA_CHAO = 50;
+    const SAPO_OFFSET_VISUAL = 55; // Offset para alinhar a base visual do sapo
 
     let gameStarted = false;
     let sapo, obstaculos = [], tempo, intervaloObstaculo, faseAtual, pontuacao;
@@ -426,7 +427,7 @@
 
     function resetGame() {
       ALTURA_CHAO = canvas.height; // Atualiza ALTURA_CHAO
-      sapo = { x: 100, y: ALTURA_CHAO - ESPESSURA_CHAO - ALTURA_SAPO, width: 40, height: ALTURA_SAPO, vy: 0, jumping: false };
+      sapo = { x: 100, y: ALTURA_CHAO - ESPESSURA_CHAO - SAPO_OFFSET_VISUAL, width: 40, height: ALTURA_SAPO, vy: 0, jumping: false };
       obstaculos = [];
       poeira = [];
       tempo = 0;
@@ -530,19 +531,19 @@
       drawChao();
       sapo.vy += GRAVIDADE;
       sapo.y += sapo.vy;
-      if (sapo.y > ALTURA_CHAO - ESPESSURA_CHAO - ALTURA_SAPO) {
-        sapo.y = ALTURA_CHAO - ESPESSURA_CHAO - ALTURA_SAPO;
+      if (sapo.y > ALTURA_CHAO - ESPESSURA_CHAO - SAPO_OFFSET_VISUAL) {
+        sapo.y = ALTURA_CHAO - ESPESSURA_CHAO - SAPO_OFFSET_VISUAL;
         sapo.vy = 0;
         sapo.jumping = false;
       }
       drawSapo();
-      console.log("Desenhando sapo em x:", sapo.x, "y:", sapo.y);
+      console.log("Desenhando sapo em x:", sapo.x, "y:", sapo.y, "base visual em:", sapo.y + SAPO_OFFSET_VISUAL);
       atualizarPoeira();
       if (tempo % intervaloObstaculo === 0) {
         let cores = ["#d32f2f", "#fbc02d", "#7b1fa2", "#00796b"];
         let cor = cores[Math.floor(Math.random() * cores.length)];
         obstaculos.push({ x: canvas.width, y: ALTURA_CHAO - ESPESSURA_CHAO - 30, width: 30, height: 30, color: cor });
-        console.log("Obstáculo criado em x:", canvas.width, "y:", ALTURA_CHAO - ESPESSURA_CHAO - 30);
+        console.log("Obstáculo criado em x:", canvas.width, "y:", ALTURA_CHAO - ESPESSURA_CHAO - 30, "base em:", ALTURA_CHAO - ESPESSURA_CHAO);
       }
       for (let i = 0; i < obstaculos.length; i++) {
         let obs = obstaculos[i];
@@ -583,17 +584,19 @@
       }
       // Reajusta a posição do sapo após redimensionamento
       if (sapo) {
-        sapo.y = ALTURA_CHAO - ESPESSURA_CHAO - ALTURA_SAPO;
+        sapo.y = ALTURA_CHAO - ESPESSURA_CHAO - SAPO_OFFSET_VISUAL;
       }
     }
 
     function verificarColisao() {
       for (let obs of obstaculos) {
+        // Ajusta a hitbox do sapo para corresponder ao novo alinhamento visual
+        const sapoHitboxY = sapo.y + (SAPO_OFFSET_VISUAL - ALTURA_SAPO); // Ajusta para a base visual
         if (
           sapo.x < obs.x + obs.width &&
           sapo.x + sapo.width > obs.x &&
-          sapo.y < obs.y + obs.height &&
-          sapo.y + sapo.height > obs.y
+          sapoHitboxY < obs.y + obs.height &&
+          sapoHitboxY + ALTURA_SAPO > obs.y
         ) {
           return true;
         }
