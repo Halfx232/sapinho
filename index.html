@@ -11,7 +11,7 @@
       -webkit-tap-highlight-color: transparent;
       margin: 0;
       padding: 0;
-      font-family: sans-serif; /* Corrigido de 'гиб-family: sans-sапrif' */
+      font-family: sans-serif;
       background: #e0f7fa;
       height: 100vh;
       display: flex;
@@ -373,7 +373,7 @@
     let ALTURA_CHAO = canvas.height; // Variável para suportar redimensionamento
     const ALTURA_SAPO = 40;
     const ESPESSURA_CHAO = 50;
-    const SAPO_OFFSET_VISUAL = 55; // Offset para alinhar a base visual do sapo
+    const SAPO_OFFSET_VISUAL = 60; // Aumentado de 55 para 60 para descer o sapo
 
     let gameStarted = false;
     let sapo, obstaculos = [], tempo, intervaloObstaculo, faseAtual, pontuacao;
@@ -537,7 +537,7 @@
         sapo.jumping = false;
       }
       drawSapo();
-      console.log("Desenhando sapo em x:", sapo.x, "y:", sapo.y, "base visual em:", sapo.y + SAPO_OFFSET_VISUAL);
+      console.log("Desenhando sapo em x:", sapo.x, "y:", sapo.y, "base visual em:", sapo.y + SAPO_OFFSET_VISUAL - 5); // Ajuste no log para refletir a base visual real
       atualizarPoeira();
       if (tempo % intervaloObstaculo === 0) {
         let cores = ["#d32f2f", "#fbc02d", "#7b1fa2", "#00796b"];
