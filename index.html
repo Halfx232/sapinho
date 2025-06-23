@@ -363,9 +363,18 @@
     const fases = ["primavera", "verão", "outono", "inverno"];
     const coresFase = {
       primavera: { fundo: "#dcedc8", chao: "#81c784" },
-      verão: { fundo: "#fff9c4", chao: "#fbc02d" },
-      outono: { fundo: "#ffe0b2", chao: "#ff8f00" },
-      inverno: { fundo: "#e0f7fa", chao: "#4dd0e1" }
+      verão: {
+        fundo: fundo: "#fff9c4", // Corrigido para remover sintaxe inválida
+        chao: "#fbc02d"
+      },
+      outono: {
+        fundo: "#ffe0b2",
+        chao: "#ff8d00"
+      },
+      inverno: {
+        fundo: "#e0f7fa",
+        chao: "#4dd0e1"
+      }
     };
 
     const PONTUACAO_VITORIA = 5000;
@@ -373,7 +382,7 @@
     let ALTURA_CHAO = canvas.height; // Variável para suportar redimensionamento
     const ALTURA_SAPO = 40;
     const ESPESSURA_CHAO = 50;
-    const SAPO_OFFSET_VISUAL = 50; // Reduzido de 55 para 50 para descer o sapo
+    const SAPO_OFFSET_VISUAL = 52; // Ajustado para descer o sapinho
 
     let gameStarted = false;
     let sapo, obstaculos = [], tempo, intervaloObstaculo, faseAtual, pontuacao;
@@ -590,7 +599,6 @@
 
     function verificarColisao() {
       for (let obs of obstaculos) {
-        // Ajusta a hitbox do sapo para corresponder ao novo alinhamento visual
         const sapoHitboxY = sapo.y + (SAPO_OFFSET_VISUAL - ALTURA_SAPO); // Ajusta para a base visual
         if (
           sapo.x < obs.x + obs.width &&
